@@ -2,6 +2,22 @@
 
 Library that helps working with DIDs (decentralized identities) on Blockcore and resolve DID Document from the "did:is" DID Method.
 
+## Building and Testing
+
+The library can be built using TypeScript Compiler, either directly or through npm:
+
+```
+npm run build
+```
+
+To generate and update the example documents, use this command:
+
+```
+npm run examples
+```
+
+This will update the example documents available at [test/examples](test/examples)
+
 ## Sanity Notes
 
 `did-configuration.json` specification is a VC that prove ownership of DID. It is not a DID Document by itself, but a list of linked IDs (DIDs). Example: https://identity.foundation/.well-known/did-configuration.json
