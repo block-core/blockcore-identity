@@ -9,7 +9,8 @@
     "tsc": "tsc",
     "dev": "ts-node-dev --respawn --transpileOnly ./app/app/index.ts",
     "prod": "tsc && node ./build/app/index.js",
-    "start": "node build/app/index.js"
+    "start": "node build/app/index.js",
+    "examples": "node build/test/examples.js"
   },
   "author": "",
   "license": "ISC",

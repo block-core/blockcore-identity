@@ -37,8 +37,6 @@ export async function app() {
    // var random = randomBytes(32);
    var random = Buffer.from('a5a65522bf1490644e31289f5e77a9737c3fac762b2606276979dd25691513e8', 'hex');
 
-   console.log(random.toString('hex'));
-
    // Create a key pair using the "bitcoinjs-lib".
    const bitcoinKeyPair = ECPair.makeRandom({ rng: () => random });
 
@@ -57,12 +55,8 @@ export async function app() {
       didKeyPair.publicKeyBuffer.toString('hex')
    );
 
-   console.log('bitcoinPublicKeyBase58: ' + bitcoinPublicKeyBase58);
-   console.log('didPublicKeyBase58: ' + didPublicKeyBase58);
-
    // Keep both the keypair and webkey available to use.
    let keyPairBitcoin = await tools.keyPairFrom({ publicKeyBase58: bitcoinPublicKeyBase58, privateKeyHex: bitcoinKeyPair.privateKey?.toString('hex') });
-   console.log(keyPairBitcoin.toKeyPair(true));
 
    let keyPairDid = await tools.keyPairFrom({ publicKeyBase58: didPublicKeyBase58, privateKeyHex: didKeyPair.privateKeyBuffer?.toString('hex') });
    console.log(keyPairDid.toKeyPair(true));
@@ -71,10 +65,9 @@ export async function app() {
    // let randomKeys = await tools.generateKeyPair();
 
    if (keyPairBitcoin.controller != keyPairDid.controller) {
-      throw Error('Should be equal!!');
+      throw Error('Should be equal!');
    }
 
-   // let keyPair = await tools.keyPairFrom({ publicKeyBase58: bitcoinPublicKeyBase58, privateKeyHex: privateKeyHex });
    let keyPairWebKey = await didKeyPair.toJsonWebKeyPair(true);
 
    // The WebKey get "did-key" values as they are not read from the keypair instance, so we have to override:
@@ -108,36 +101,35 @@ export async function app() {
 
    const payload = identity.document({ service: services });
 
-   console.log('PAYLOAD:');
+   console.log('DID DOCUMENT (JSON):');
    console.log(payload);
 
    // const signedJwt = await identity.signJwt({ payload: payload, privateKeyJwk: keyPairWebKey.privateKeyJwk });
    // console.log('SIGNED PAYLOAD:');
    // console.log(signedJwt);
 
-   // const jwt = await identity.jwt({
-   //    payload: payload,
-   //    privateKey: didKeyPair.privateKeyBuffer?.toString('hex')
-   // });
+   const jwt = await identity.jwt({
+      payload: payload,
+      privateKey: didKeyPair.privateKeyBuffer?.toString('hex')
+   });
 
-   // console.log('JWT:');
-   // console.log(jwt);
+   // Decode the JWT
+   console.log('DID DOCUMENT (JWT):');
+   console.log(jwt);
+   console.log(JSON.stringify(decodeJWT(jwt)));
 
-   // Decode the JWT, used for viewing.
-   // console.log(didJWT.decodeJWT(jwt));
 
    const jws = await identity.jws({
       payload: payload,
       privateKey: didKeyPair.privateKeyBuffer?.toString('hex')
    });
 
-   // Decode the JWT, used for viewing.
-   // console.log(didJWT.decodeJWT(jwt));
+   // Decode the JWS
+   console.log('DID DOCUMENT (JWS):');
+   console.log(jws);
+   console.log(JSON.stringify(decodeJWT(jws)));
 
    var didDocumentDecoded = decodeJWT(jws);
-
-   console.log(didDocumentDecoded);
-
    var didDocumentPayload = JSON.stringify(didDocumentDecoded.payload);
 
    console.log('COPY THIS:');
