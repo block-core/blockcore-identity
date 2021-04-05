@@ -12,8 +12,7 @@ import randomBytes from 'randombytes';
 const fs = require('fs');
 const path = require('path');
 
-function save(filename: string, content : string)
-{
+function save(filename: string, content: string) {
    const filePath = path.join(__dirname, '..', '..', 'test/examples/', filename);
    console.log('Saving: ' + filePath);
    const data = fs.writeFileSync(filePath, content);
@@ -95,7 +94,7 @@ export async function app() {
    const issuer = identity.issuer({ privateKey: didKeyPair.privateKeyBuffer?.toString('hex') });
 
    var configuration = await identity.configuration('https://www.blockcore.net', issuer);
-   
+
    save('did-configuration.json', JSON.stringify(configuration, null, 2));
 
    var vc = await identity.configurationVerifiableCredential('https://www.blockcore.net', issuer);
@@ -111,6 +110,9 @@ export async function app() {
    // This will transform an JWT-VC into an JSON-VC and embedd the "JwtProof2020" proof type.
    save('vc-normalized.json', JSON.stringify(normalizeCredential(didJwt, true), null, 2));
    save('vc-normalized-original-values.json', JSON.stringify(normalizeCredential(didJwt, false), null, 2));
+
+   var didPayload = await identity.generateDidPayload(jws);
+   save('did-payload.json', JSON.stringify(didPayload, null, 2));
 
    var verified = await verifyJWT(didJwt, { resolver: resolver });
    save('vc-verified.json', JSON.stringify(verified, null, 2));

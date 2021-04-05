@@ -222,6 +222,11 @@ export async function app() {
    // Decode the JWT, used for viewing.
    console.log(decodeJWT(didJwt));
 
+
+   var didPayload = await identity.generateDidPayload(jws);
+   console.log(didPayload);
+
+
    var verified = await verifyJWT(didJwt, { resolver: resolver });
 
    console.log('VERIFIED:');

@@ -7,7 +7,7 @@ import utf8 from 'utf8';
 import { createJWS, createJWT, decodeJWT, ES256KSigner } from 'did-jwt';
 import fetch from 'cross-fetch'
 import { DIDDocument, ParsedDID, Resolver } from 'did-resolver';
-import * as randomBytes from 'randombytes';
+import randomBytes from 'randombytes';
 import * as secp256k1 from '@transmute/did-key-secp256k1';
 import { Secp256k1KeyPair } from '@transmute/did-key-secp256k1';
 import { ISecp256k1PrivateKeyJwk } from '@transmute/did-key-secp256k1/dist/keyUtils';
@@ -16,6 +16,14 @@ import { createVerifiableCredentialJwt, Issuer, JwtCredentialPayload, normalizeC
 
 export class BlockcoreIdentityIssuer {
 
+}
+
+async function _generateKeyPair() {
+   const keyPair = await Secp256k1KeyPair.generate({
+      secureRandom: () => randomBytes(32)
+   });
+
+   return keyPair;
 }
 
 /** Blockcore DID only supports secp256k so APIs and code is simplified compared to variuos other implementations. */
@@ -141,6 +149,32 @@ export class BlockcoreIdentity {
       data.authentication = [this.verificationMethod.id];
 
       return data;
+   }
+
+   public async getJsonWebKeyPair(keyPair?: secp256k1.Secp256k1KeyPair) {
+
+      if (!keyPair) {
+         keyPair = await _generateKeyPair();
+      }
+
+      const { publicKeyJwk, privateKeyJwk } = await keyPair.toJsonWebKeyPair(true);
+      return {
+         publicJwk: publicKeyJwk,
+         privateJwk: privateKeyJwk
+      }
+   }
+
+   public async generateKeyPair() {
+      return await _generateKeyPair();
+   }
+
+   public async generateDidPayload(content = {}) {
+      return {
+         operation: 'create',
+         content: content,
+         recovery: await this.getJsonWebKeyPair(), // Generate random keys
+         update: await this.getJsonWebKeyPair() // Generate random keys
+      };
    }
 
    /** Generates the DID document for the current identity. */
