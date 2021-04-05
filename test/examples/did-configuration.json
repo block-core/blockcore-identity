@@ -1,1 +1,23 @@
-{"@context":"https://identity.foundation/.well-known/did-configuration/v1","linked_dids":[{"@context":["https://www.w3.org/2018/credentials/v1","https://identity.foundation/.well-known/did-configuration/v1"],"type":["VerifiableCredential","DomainLinkageCredential"],"credentialSubject":{"id":"did:is:PMW1Ks7h4brpN8FdDVLwhPDKJ7LdA7mVdd","origin":"https://www.blockcore.net"},"expirationDate":"2121-04-05T12:10:39.878Z","issuanceDate":"2021-04-05T12:10:39.878Z","issuer":"did:is:PMW1Ks7h4brpN8FdDVLwhPDKJ7LdA7mVdd"},"eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NksifQ.eyJleHAiOjQ3NzMyOTgyMzksInZjIjp7IkBjb250ZXh0IjpbImh0dHBzOi8vd3d3LnczLm9yZy8yMDE4L2NyZWRlbnRpYWxzL3YxIiwiaHR0cHM6Ly9pZGVudGl0eS5mb3VuZGF0aW9uLy53ZWxsLWtub3duL2RpZC1jb25maWd1cmF0aW9uL3YxIl0sInR5cGUiOlsiVmVyaWZpYWJsZUNyZWRlbnRpYWwiLCJEb21haW5MaW5rYWdlQ3JlZGVudGlhbCJdLCJjcmVkZW50aWFsU3ViamVjdCI6eyJpZCI6ImRpZDppczpQTVcxS3M3aDRicnBOOEZkRFZMd2hQREtKN0xkQTdtVmRkIiwib3JpZ2luIjoiaHR0cHM6Ly93d3cuYmxvY2tjb3JlLm5ldCJ9LCJleHBpcmF0aW9uRGF0ZSI6IjIxMjEtMDQtMDVUMTI6MTA6MzkuODc4WiIsImlzc3VhbmNlRGF0ZSI6IjIwMjEtMDQtMDVUMTI6MTA6MzkuODc4WiIsImlzc3VlciI6ImRpZDppczpQTVcxS3M3aDRicnBOOEZkRFZMd2hQREtKN0xkQTdtVmRkIn0sImlzcyI6ImRpZDppczpQTVcxS3M3aDRicnBOOEZkRFZMd2hQREtKN0xkQTdtVmRkIiwibmJmIjoxNjE3NjI0NjM5LCJzdWIiOiJkaWQ6aXM6UE1XMUtzN2g0YnJwTjhGZERWTHdoUERLSjdMZEE3bVZkZCJ9.BsgFLySSYkcls9ppX9cf-TrO6kDhrKO1BZh0tlYWoWxDD71231CvWweqbQLsXvgVW96UCnHWnU8BKFqSet0nIQ"]}
+{
+  "@context": "https://identity.foundation/.well-known/did-configuration/v1",
+  "linked_dids": [
+    {
+      "@context": [
+        "https://www.w3.org/2018/credentials/v1",
+        "https://identity.foundation/.well-known/did-configuration/v1"
+      ],
+      "type": [
+        "VerifiableCredential",
+        "DomainLinkageCredential"
+      ],
+      "credentialSubject": {
+        "id": "did:is:PMW1Ks7h4brpN8FdDVLwhPDKJ7LdA7mVdd",
+        "origin": "https://www.blockcore.net"
+      },
+      "expirationDate": "2121-04-05T12:17:05.471Z",
+      "issuanceDate": "2021-04-05T12:17:05.471Z",
+      "issuer": "did:is:PMW1Ks7h4brpN8FdDVLwhPDKJ7LdA7mVdd"
+    },
+    "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NksifQ.eyJleHAiOjQ3NzMyOTg2MjUsInZjIjp7IkBjb250ZXh0IjpbImh0dHBzOi8vd3d3LnczLm9yZy8yMDE4L2NyZWRlbnRpYWxzL3YxIiwiaHR0cHM6Ly9pZGVudGl0eS5mb3VuZGF0aW9uLy53ZWxsLWtub3duL2RpZC1jb25maWd1cmF0aW9uL3YxIl0sInR5cGUiOlsiVmVyaWZpYWJsZUNyZWRlbnRpYWwiLCJEb21haW5MaW5rYWdlQ3JlZGVudGlhbCJdLCJjcmVkZW50aWFsU3ViamVjdCI6eyJpZCI6ImRpZDppczpQTVcxS3M3aDRicnBOOEZkRFZMd2hQREtKN0xkQTdtVmRkIiwib3JpZ2luIjoiaHR0cHM6Ly93d3cuYmxvY2tjb3JlLm5ldCJ9LCJleHBpcmF0aW9uRGF0ZSI6IjIxMjEtMDQtMDVUMTI6MTc6MDUuNDcxWiIsImlzc3VhbmNlRGF0ZSI6IjIwMjEtMDQtMDVUMTI6MTc6MDUuNDcxWiIsImlzc3VlciI6ImRpZDppczpQTVcxS3M3aDRicnBOOEZkRFZMd2hQREtKN0xkQTdtVmRkIn0sImlzcyI6ImRpZDppczpQTVcxS3M3aDRicnBOOEZkRFZMd2hQREtKN0xkQTdtVmRkIiwibmJmIjoxNjE3NjI1MDI1LCJzdWIiOiJkaWQ6aXM6UE1XMUtzN2g0YnJwTjhGZERWTHdoUERLSjdMZEE3bVZkZCJ9.6i-r3XeH_eo7J4_SHDJI7QTbi8nmrFCvXUyfw-fC1TJmdvx9RZCWlfPVSoMI8OqsQGoz-HwOhjDdlwCPW2QjOg"
+  ]
+}

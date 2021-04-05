@@ -61,7 +61,7 @@ export async function app() {
    ];
 
    const payload = identity.document({ service: services });
-   save('did-document-payload.json', JSON.stringify(payload));
+   save('did-document-payload.json', JSON.stringify(payload, null, 2));
 
    // const signedJwt = await identity.signJwt({ payload: payload, privateKeyJwk: keyPairWebKey.privateKeyJwk });
    // console.log('SIGNED PAYLOAD:');
@@ -73,7 +73,7 @@ export async function app() {
    });
 
    save('did-document-jwt.txt', jwt);
-   save('did-document-jwt-decoded.json', JSON.stringify(decodeJWT(jwt)));
+   save('did-document-jwt-decoded.json', JSON.stringify(decodeJWT(jwt), null, 2));
 
    const jws = await identity.jws({
       payload: payload,
@@ -81,12 +81,12 @@ export async function app() {
    });
 
    save('did-document-jws.txt', jws);
-   save('did-document-jws-decoded.json', JSON.stringify(decodeJWT(jws)));
+   save('did-document-jws-decoded.json', JSON.stringify(decodeJWT(jws), null, 2));
 
    var didDocumentDecoded = decodeJWT(jws);
-   var didDocumentPayload = JSON.stringify(didDocumentDecoded.payload);
+   var didDocumentPayload = JSON.stringify(didDocumentDecoded.payload, null, 2);
 
-   save('did.json', JSON.stringify(identity.did()));
+   save('did.json', JSON.stringify(identity.did(), null, 2));
 
    // Get the Bitcoin Resolver used to resolver DID Documents from REST API.
    const resolver = new Resolver(getResolver());
@@ -96,7 +96,7 @@ export async function app() {
 
    var configuration = await identity.configuration('https://www.blockcore.net', issuer);
    
-   save('did-configuration.json', JSON.stringify(configuration));
+   save('did-configuration.json', JSON.stringify(configuration, null, 2));
 
    const didJwt = configuration.linked_dids[1];
 
