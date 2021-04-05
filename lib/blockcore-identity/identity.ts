@@ -12,7 +12,7 @@ import * as secp256k1 from '@transmute/did-key-secp256k1';
 import { Secp256k1KeyPair } from '@transmute/did-key-secp256k1';
 import { ISecp256k1PrivateKeyJwk } from '@transmute/did-key-secp256k1/dist/keyUtils';
 import { VerificationMethod } from './interfaces';
-import { createVerifiableCredentialJwt, Issuer, JwtCredentialPayload } from 'did-jwt-vc';
+import { createVerifiableCredentialJwt, Issuer, JwtCredentialPayload, normalizeCredential } from 'did-jwt-vc';
 
 export class BlockcoreIdentityIssuer {
 
@@ -183,9 +183,9 @@ export class BlockcoreIdentity {
                'id': this.id,
                'origin': domain
             },
-            "expirationDate": expiredate.toISOString(),
-            "issuanceDate": date.toISOString(),
-            "issuer": this.id,
+            //"expirationDate": expiredate.toISOString(),
+            //"issuanceDate": date.toISOString(),
+            //"issuer": this.id,
          }
       }
 
@@ -198,13 +198,15 @@ export class BlockcoreIdentity {
    public async configuration(domain: string, issuer: any) {
 
       var vc = await this.configurationVerifiableCredential(domain, issuer);
-      var vcDecoded = decodeJWT(vc);
+
+      var vcNormalized = normalizeCredential(vc, true)
+      // var vcDecoded = decodeJWT(vc); // This is wrong and does not convert the JWT-VC according to the "vc-data-model" specification. Use normalize from "did-jwt-vc" library.
 
       const data: any = {};
       data['@context'] = 'https://identity.foundation/.well-known/did-configuration/v1';
 
       data.linked_dids = [
-         vcDecoded.payload.vc, vc
+         vcNormalized, vc
       ];
 
       return data;

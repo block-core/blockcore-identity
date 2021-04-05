@@ -1,6 +1,6 @@
 import { decodeJWT, verifyJWT } from 'did-jwt';
 import { Resolver } from 'did-resolver';
-import { JwtCredentialPayload, createVerifiableCredentialJwt, JwtPresentationPayload, createVerifiablePresentationJwt, verifyCredential, verifyPresentation } from 'did-jwt-vc';
+import { JwtCredentialPayload, createVerifiableCredentialJwt, JwtPresentationPayload, createVerifiablePresentationJwt, verifyCredential, verifyPresentation, normalizeCredential } from 'did-jwt-vc';
 
 import { getResolver } from '../lib/blockcore-did-resolver';
 import { BlockcoreIdentity, BlockcoreIdentityTools } from '../lib/blockcore-identity';
@@ -98,13 +98,22 @@ export async function app() {
    
    save('did-configuration.json', JSON.stringify(configuration, null, 2));
 
+   var vc = await identity.configurationVerifiableCredential('https://www.blockcore.net', issuer);
+   save('did-configuration-vc-jwt.txt', vc);
+
+   // This decoding of an JWT-VC is invalid, as it does not copy the JWT-fields into the VC JSON structure.
+   // Added as an example, and these outputs should not be used.
+   var vcDecoded = decodeJWT(vc);
+   save('did-configuration-vc-jwt-decoded.json', JSON.stringify(vcDecoded, null, 2));
+
    const didJwt = configuration.linked_dids[1];
 
-   // Decode the JWT, used for viewing.
-   // console.log(decodeJWT(didJwt));
+   // This will transform an JWT-VC into an JSON-VC and embedd the "JwtProof2020" proof type.
+   save('vc-normalized.json', JSON.stringify(normalizeCredential(didJwt, true), null, 2));
+   save('vc-normalized-original-values.json', JSON.stringify(normalizeCredential(didJwt, false), null, 2));
 
    var verified = await verifyJWT(didJwt, { resolver: resolver });
-
+   save('vc-verified.json', JSON.stringify(verified, null, 2));
    //console.log('VERIFIED:');
    //console.log(verified);
 }
