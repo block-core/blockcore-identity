@@ -27,5 +27,8 @@
       "type": "EncryptedDataVault",
       "serviceEndpoint": "https://vault.blockcore.net/"
     }
+  ],
+  "authentication": [
+    "did:is:PMW1Ks7h4brpN8FdDVLwhPDKJ7LdA7mVdd#key-1"
   ]
 }

@@ -137,6 +137,9 @@ export class BlockcoreIdentity {
          data.service = options.service.sort(this.ordered);
       }
 
+      // Get the unique ID of the verification method, this might have extra data to make it unique in the list (#key-1).
+      data.authentication = [this.verificationMethod.id];
+
       return data;
    }
 
