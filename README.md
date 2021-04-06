@@ -10,6 +10,8 @@ The next goal is to implement Linked Data Signature / JSON-LD, making the VCs mo
 
 https://github.com/w3c-ccg/lds-jws2020
 
+https://github.com/digitalbazaar/vc-js
+
 Support for JWT VCs will likely be removed from this library in the future and should not be used.
 
 ## Building and Testing
