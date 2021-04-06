@@ -1,5 +1,18 @@
 # Use Cases for Blockcore Identity
 
+## Store Purchases
+
+After scanning/entering the products the customer want to buy, the sellers Point-of-Sale terminal would show a payment request. This could potentially be an regular payment request using various scheme already used. Alternatively it could be an `Presentation Request` that would contain transaction ID, and potentially the full signed transaction to pay for the goods and services. In the `Presentation Request`, the store could also ask for `Bonus Card`, which is an VC that the store has issued previously to the customer.
+
+Bonus Cards should normally not be linked to an DID, for privacy reasons. The store itself can potentially store data relating the customers Bonus Cards and their DID, if needed or approved by the customer.
+
+The Bonus Card will allow a customer to collect points / bonus, in a safe and privacy safe manner.
+
+The PR to perform payment, should normally be signed with an ephemeral private key and not the regular signing key. This is to ensure privacy and the store does not need to know the identity of the purchaser in most cases. In some cases depending on the items purchased and need to show proof of payment, the DID might be used for signing a payment.
+
+After receiving the `Verifiable Presentation` and verifying that the transaction is accepted by the blockchain, the Point-of-Sale solution can display an receipt VC that the customer can scan using QR code.
+
+The customer should/could keep their receipts on their local device, cloud or personal data vault (confidential storage).
 
 ## Car Sales
 
