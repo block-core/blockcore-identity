@@ -1,3 +1,5 @@
+WARNING: This branch was left here for backup / reference, it's an implementation that relies on JWT-VCs and not JSON-LD VCs. JSON-LD VCs is the selected path forward.
+
 # Blockcore Identity Library (JS)
 
 Library that helps working with DIDs (decentralized identities) on Blockcore and resolve DID Document from the "did:is" DID Method.
