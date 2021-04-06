@@ -14,6 +14,8 @@ https://github.com/digitalbazaar/vc-js
 
 Support for JWT VCs will likely be removed from this library in the future and should not be used.
 
+https://github.com/decentralized-identity/.well-known/issues/25
+
 ## Building and Testing
 
 The library can be built using TypeScript Compiler, either directly or through npm:
