@@ -2,6 +2,16 @@
 
 Library that helps working with DIDs (decentralized identities) on Blockcore and resolve DID Document from the "did:is" DID Method.
 
+## Development and Status
+
+The current implementation supports JWT VCs and can decode the JWT VSs into an JSON structure that is similar to JSON-LD, but is not compliant with the standard ("proof" element of it).
+
+The next goal is to implement Linked Data Signature / JSON-LD, making the VCs more easily indexed / searchable and human readable.
+
+https://github.com/w3c-ccg/lds-jws2020
+
+Support for JWT VCs will likely be removed from this library in the future and should not be used.
+
 ## Building and Testing
 
 The library can be built using TypeScript Compiler, either directly or through npm:
