@@ -13,7 +13,7 @@ const fs = require('fs');
 const path = require('path');
 
 function save(filename: string, content: string) {
-   const filePath = path.join(__dirname, '..', '..', 'test/examples/', filename);
+   const filePath = path.join(__dirname, '..', '..', 'test/examples-jwt/', filename);
    console.log('Saving: ' + filePath);
    const data = fs.writeFileSync(filePath, content);
 }

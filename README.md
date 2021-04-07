@@ -4,17 +4,14 @@ Library that helps working with DIDs (decentralized identities) on Blockcore and
 
 ## Development and Status
 
-The current implementation supports JWT VCs and can decode the JWT VSs into an JSON structure that is similar to JSON-LD, but is not compliant with the standard ("proof" element of it).
+The current implementation supports JWT VCs and can decode the JWT VSs into an JSON structure, but is not compliant with the W3C standard due to the "proof" type.
 
-The next goal is to implement Linked Data Signature / JSON-LD, making the VCs more easily indexed / searchable and human readable.
+Future goal is to implemented Linked Data Signature / JSON-LD, but at the current time (April 2021) the available VC libraries are not accessible enough and 
+updated with the latest W3C specification. The following libraries could likely be foundation for JSON-LD VCs:
 
 https://github.com/w3c-ccg/lds-jws2020
 
 https://github.com/digitalbazaar/vc-js
-
-Support for JWT VCs will likely be removed from this library in the future and should not be used.
-
-https://github.com/decentralized-identity/.well-known/issues/25
 
 ## Building and Testing
 
@@ -47,3 +44,7 @@ This will update the example documents available at [test/examples](test/example
 [did-configuration.json](https://www.blockcore.net/.well-known/did-configuration.json)
 
 [did.json](https://www.blockcore.net/.well-known/did.json)
+
+## Resources
+
+https://www.w3.org/TR/vc-imp-guide/

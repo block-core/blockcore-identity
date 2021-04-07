@@ -147,6 +147,7 @@ export class BlockcoreIdentity {
 
       // Get the unique ID of the verification method, this might have extra data to make it unique in the list (#key-1).
       data.authentication = [this.verificationMethod.id];
+      data.assertionMethod = [this.verificationMethod.id];
 
       return data;
    }
@@ -176,6 +177,13 @@ export class BlockcoreIdentity {
          update: await this.getJsonWebKeyPair() // Generate random keys
       };
    }
+
+   // async resolve(didUri, options = {}) {
+   //    return fetch((options.nodeEndpoint || 'https://beta.discover.did.microsoft.com/1.0/identifiers/') + didUri)
+   //       .then(response => {
+   //          if (response.status >= 400) throw new Error('Not Found');
+   //          return response.json();
+   //       });
 
    /** Generates the DID document for the current identity. */
    public configuration2(options: { service: [] } | any = null) {
