@@ -1,7 +1,4 @@
 {
-  "@context": [
-    "https://www.w3.org/ns/did/v1"
-  ],
   "id": "did:is:PMW1Ks7h4brpN8FdDVLwhPDKJ7LdA7mVdd",
   "verificationMethod": [
     {
@@ -29,6 +26,9 @@
     }
   ],
   "authentication": [
+    "did:is:PMW1Ks7h4brpN8FdDVLwhPDKJ7LdA7mVdd#key-1"
+  ],
+  "assertionMethod": [
     "did:is:PMW1Ks7h4brpN8FdDVLwhPDKJ7LdA7mVdd#key-1"
   ]
 }

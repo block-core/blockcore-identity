@@ -129,7 +129,7 @@ export class BlockcoreIdentity {
    /** Generate the did.json document for this identity. This is a simple structure with only the identifier. */
    public did() {
       return {
-         '@context': ['https://www.w3.org/ns/did/v1'],
+         // '@context': ['https://www.w3.org/ns/did/v1'], // We only implement application/did+json
          id: this.id
       };
    }
@@ -137,7 +137,7 @@ export class BlockcoreIdentity {
    /** Generates the DID document for the current identity. */
    public document(options: { service: [] } | any = null) {
       const data: any = {};
-      data['@context'] = ['https://www.w3.org/ns/did/v1'];
+      // data['@context'] = ['https://www.w3.org/ns/did/v1'];  // We only implement application/did+json
       data.id = this.id;
       data.verificationMethod = [this.verificationMethod];
 
@@ -178,6 +178,15 @@ export class BlockcoreIdentity {
       };
    }
 
+   public async generateOperation(type: string, operation: string, sequence: number, content = {}) {
+      return {
+         type,
+         operation,
+         sequence,
+         content
+      };
+   }
+
    // async resolve(didUri, options = {}) {
    //    return fetch((options.nodeEndpoint || 'https://beta.discover.did.microsoft.com/1.0/identifiers/') + didUri)
    //       .then(response => {
@@ -215,11 +224,21 @@ export class BlockcoreIdentity {
    public async configurationVerifiableCredential(domain: string, issuer: any) {
       const date = new Date();
       const expiredate = new Date(new Date().setFullYear(date.getFullYear() + 100));
+      let expiredateNumber = Math.floor(expiredate.getTime() / 1000);
+
+      // Due to issue with Microsoft middleware for JWT validation, we cannot go higher than this expiration date.
+      // Source: https://stackoverflow.com/questions/43593074/jwt-validation-fails/46654832#46654832
+      if (expiredateNumber > 2147483647) {
+         expiredateNumber = 2147483647;
+      }
+
+      const currentDateNumber = Math.floor(date.getTime() / 1000);
 
       const vcPayload: JwtCredentialPayload = {
-         exp: Math.floor(expiredate.getTime() / 1000),
-         iss: this.id,
-         nbf: Math.floor(date.getTime() / 1000),
+         // iss: this.id, // This is automatically added by the library and not needed.
+         exp: expiredateNumber,
+         iat: currentDateNumber,
+         nbf: currentDateNumber,
          sub: this.id,
          vc: {
             '@context': ['https://www.w3.org/2018/credentials/v1', 'https://identity.foundation/.well-known/did-configuration/v1'],
@@ -244,7 +263,7 @@ export class BlockcoreIdentity {
 
       var vc = await this.configurationVerifiableCredential(domain, issuer);
 
-      var vcNormalized = normalizeCredential(vc, true)
+      var vcNormalized = normalizeCredential(vc, true);
       // var vcDecoded = decodeJWT(vc); // This is wrong and does not convert the JWT-VC according to the "vc-data-model" specification. Use normalize from "did-jwt-vc" library.
 
       const data: any = {};

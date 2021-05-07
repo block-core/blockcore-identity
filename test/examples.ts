@@ -30,12 +30,17 @@ export async function app() {
       didKeyPair.publicKeyBuffer.toString('hex')
    );
 
+   console.log('didPublicKeyBase58: ' + didPublicKeyBase58);
+   console.log('private key hex: ' + didKeyPair.privateKeyBuffer?.toString('hex'));
+
    let keyPairDid = await tools.keyPairFrom({ publicKeyBase58: didPublicKeyBase58, privateKeyHex: didKeyPair.privateKeyBuffer?.toString('hex') });
    let keyPairWebKey = await didKeyPair.toJsonWebKeyPair(true);
 
    // The WebKey get "did-key" values as they are not read from the keypair instance, so we have to override:
    keyPairWebKey.id = keyPairDid.id;
    keyPairWebKey.controller = keyPairDid.controller;
+
+   save('web-key-pair.json', JSON.stringify(keyPairWebKey, null, 2));
 
    // Create an instance of Blockcore Identity using only public key.
    const identity = new BlockcoreIdentity(keyPairDid.toKeyPair(false));
@@ -113,6 +118,24 @@ export async function app() {
 
    var didPayload = await identity.generateDidPayload(jws);
    save('did-payload.json', JSON.stringify(didPayload, null, 2));
+
+   var operationPayloadCreate = await identity.generateOperation('identity', 'create', 0, jws);
+
+   const operationCreateJws = await identity.jws({
+      payload: operationPayloadCreate,
+      privateKey: didKeyPair.privateKeyBuffer?.toString('hex')
+   });
+
+   save('operation-create.json', JSON.stringify(operationCreateJws, null, 2));
+
+   var operationPayload = await identity.generateOperation('identity', 'replace', 1, jws);
+
+   const operationReplaceJws = await identity.jws({
+      payload: operationPayload,
+      privateKey: didKeyPair.privateKeyBuffer?.toString('hex')
+   });
+
+   save('operation-replace.json', JSON.stringify(operationReplaceJws, null, 2));
 
    var verified = await verifyJWT(didJwt, { resolver: resolver });
    save('vc-verified.json', JSON.stringify(verified, null, 2));

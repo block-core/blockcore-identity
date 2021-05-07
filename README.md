@@ -13,6 +13,12 @@ https://github.com/w3c-ccg/lds-jws2020
 
 https://github.com/digitalbazaar/vc-js
 
+## Verifiable Credentials (VC)
+
+Ensure that IANA claims are used if they fit:
+
+https://www.iana.org/assignments/jwt/jwt.xhtml
+
 ## Building and Testing
 
 The library can be built using TypeScript Compiler, either directly or through npm:
