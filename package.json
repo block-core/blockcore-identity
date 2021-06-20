@@ -2,19 +2,35 @@
   "name": "blockcore-identity",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "lib/blockcore-identity/index.js",
+  "types": "lib/blockcore-identity/index.d.ts",
+  "files": [
+    "lib/**/*"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm run tsc",
-    "tsc": "tsc",
+    "test": "jest --config jestconfig.json",
+    "build": "tsc",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "lint": "tslint -p tsconfig.json",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test && npm run lint",
+    "preversion": "npm run lint",
+    "postversion": "git push && git push --tags",
     "dev": "ts-node-dev --respawn --transpileOnly ./app/app/index.ts",
     "prod": "tsc && node ./build/app/index.js",
     "start": "node build/app/index.js",
     "examples": "node build/test/examples.js",
-    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
-    "lint": "tslint -p tsconfig.json"
+    "version": "node -p \"require('./package.json').version\""
   },
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/block-core/blockcore-identity.git"
+  },
+  "bugs": {
+    "url": "https://github.com/block-core/blockcore-identity/issues"
+  },
+  "homepage": "https://github.com/block-core/blockcore-identity#readme",
+  "author": "Blockcore",
   "license": "MIT",
   "dependencies": {
     "@blockcore/message": "^1.0.0",
@@ -38,10 +54,14 @@
   },
   "devDependencies": {
     "@types/bs58": "^4.0.1",
+    "@types/jest": "^26.0.23",
     "@types/randombytes": "^2.0.0",
     "@types/utf8": "^2.1.6",
+    "jest": "^27.0.4",
     "prettier": "^2.3.1",
+    "ts-jest": "^27.0.3",
     "tslint": "^6.1.3",
-    "tslint-config-prettier": "^1.18.0"
+    "tslint-config-prettier": "^1.18.0",
+    "codecov": "^3.1.0"
   }
 }
