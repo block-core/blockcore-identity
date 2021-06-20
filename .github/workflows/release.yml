@@ -1,0 +1,48 @@
+name: Publish Package
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build and Push Docker Image
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@master
+
+    - name: Variables
+      run: |
+        echo VERSION=$(npm run version --silent) >> $GITHUB_ENV
+      shell: bash
+
+    - name: Package Name
+      run: |
+        echo RELEASE_NAME=${{ env.PROJECT_NAME }}-${{ env.VERSION }}.tgz >> $GITHUB_ENV
+      shell: bash
+
+    - name: Log Variables
+      run: |
+        echo "action - ${{ github.event.action }}"
+        echo "url - ${{ github.event.release.url }}"
+        echo "assets_url - ${{ github.event.release.assets_url }}"
+        echo "id - ${{ github.event.release.id }}"
+        echo "tag_name - ${{ github.event.release.tag_name }}"
+        echo "assets - ${{ github.event.assets }}"
+        echo "assets[0] - ${{ github.event.assets[0] }}"
+
+    - name: Download release
+      uses: sondreb/action-release-download@master
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        url: ${{ github.event.release.assets_url }}
+        folder: "./"
+
+    - name: Display structure of downloaded files
+      run: ls -R
+
+    - run: npm publish ${{env.RELEASE_NAME}} --access public --dry-run
+      env:
+        NODE_AUTH_TOKEN: ${{secrets.npm_token}}

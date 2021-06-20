@@ -1,5 +1,5 @@
 {
-  "name": "blockcore-identity",
+  "name": "@blockcore/identity",
   "version": "0.0.1",
   "description": "",
   "main": "lib/blockcore-identity/index.js",
@@ -28,6 +28,14 @@
     "url": "https://github.com/block-core/blockcore-identity/issues"
   },
   "homepage": "https://github.com/block-core/blockcore-identity#readme",
+  "keywords": [
+    "blockcore",
+    "blockcore-identity",
+    "did",
+    "decentralized",
+    "identity",
+    "blockchain"
+  ],
   "author": "Blockcore",
   "license": "MIT",
   "dependencies": {
