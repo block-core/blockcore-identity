@@ -5,7 +5,7 @@
 import base64url from 'base64url'; // Should we replicate this code to avoid dependency? It's a very simple utility.
 import utf8 from 'utf8';
 import { createJWS, createJWT, decodeJWT, ES256KSigner } from 'did-jwt';
-import fetch from 'cross-fetch'
+import fetch from 'cross-fetch';
 import { DIDDocument, ParsedDID, Resolver } from 'did-resolver';
 import randomBytes from 'randombytes';
 import * as secp256k1 from '@transmute/did-key-secp256k1';
@@ -14,272 +14,267 @@ import { ISecp256k1PrivateKeyJwk } from '@transmute/did-key-secp256k1/dist/keyUt
 import { VerificationMethod } from './interfaces';
 import { createVerifiableCredentialJwt, Issuer, JwtCredentialPayload, normalizeCredential } from 'did-jwt-vc';
 
-export class BlockcoreIdentityIssuer {
-
-}
+export class BlockcoreIdentityIssuer {}
 
 async function _generateKeyPair() {
-   const keyPair = await Secp256k1KeyPair.generate({
-      secureRandom: () => randomBytes(32)
-   });
+  const keyPair = await Secp256k1KeyPair.generate({
+    secureRandom: () => randomBytes(32),
+  });
 
-   return keyPair;
+  return keyPair;
 }
 
 /** Blockcore DID only supports secp256k so APIs and code is simplified compared to variuos other implementations. */
 export class BlockcoreIdentity {
+  public static readonly PREFIX = 'did:is:';
+  public readonly id: string;
 
-   public static readonly PREFIX = 'did:is:';
-   public readonly id: string;
+  // readonly privateKey: string;
+  private readonly verificationMethod;
 
-   // readonly privateKey: string;
-   private readonly verificationMethod;
+  constructor(verificationMethod: VerificationMethod) {
+    console.log('BlockcoreIdentity input:');
+    console.log(verificationMethod);
 
-   constructor(verificationMethod: VerificationMethod) {
+    this.id = verificationMethod.controller;
+    this.verificationMethod = verificationMethod;
 
-      console.log('BlockcoreIdentity input:');
-      console.log(verificationMethod);
+    // if (privateKey.substring(0, 2) != '0x') {
+    //    privateKey += '0x';
+    // }
 
-      this.id = verificationMethod.controller;
-      this.verificationMethod = verificationMethod;
+    // this.privateKey = privateKey;
+  }
 
-      // if (privateKey.substring(0, 2) != '0x') {
-      //    privateKey += '0x';
-      // }
+  // constructor(address: string, privateKey: string) {
+  //    this.id = 'did:is:' + address;
 
-      // this.privateKey = privateKey;
-   }
+  //    if (privateKey.substring(0, 2) != '0x') {
+  //       privateKey += '0x';
+  //    }
 
-   // constructor(address: string, privateKey: string) {
-   //    this.id = 'did:is:' + address;
+  //    this.privateKey = privateKey;
+  // }
 
-   //    if (privateKey.substring(0, 2) != '0x') {
-   //       privateKey += '0x';
-   //    }
+  private ordered(a: any, b: any) {
+    let comparison = 0;
+    if (a.id > b.id) {
+      comparison = 1;
+    } else if (a.id < b.id) {
+      comparison = -1;
+    }
+    return comparison;
+  }
 
-   //    this.privateKey = privateKey;
-   // }
+  /** Sign a payload, this method only supports ES256K. */
+  // public async signJwt(params: { header?: any, payload: any, privateKeyJwk: ISecp256k1PrivateKeyJwk }) {
 
-   private ordered(a: any, b: any) {
-      let comparison = 0;
-      if (a.id > b.id) {
-         comparison = 1;
-      } else if (a.id < b.id) {
-         comparison = -1;
-      }
-      return comparison;
-   }
+  //    let method = 'sign';
+  //    let header = params.header || {};
 
-   /** Sign a payload, this method only supports ES256K. */
-   // public async signJwt(params: { header?: any, payload: any, privateKeyJwk: ISecp256k1PrivateKeyJwk }) {
+  //    header = Object.assign(header, {
+  //       alg: 'ES256K'
+  //    });
 
-   //    let method = 'sign';
-   //    let header = params.header || {};
+  //    // TODO: Until the signing library supports Multibase, we'll rely on Jwk for now.
+  //    // Initially we performed transforms to multibase on all our APIs, but changed to Jwk to reduce code.
+  //    const signed = await secp256k1.ES256K.sign(params.payload, params.privateKeyJwk, header);
+  //    return signed;
+  // }
 
-   //    header = Object.assign(header, {
-   //       alg: 'ES256K'
-   //    });
+  /** Signs a payload and encodes as JWT (JWS). The key should be in string format (hex, base58, base64). Adds "iat", "iss" to payload and "typ" to header. */
+  public async jwt(options: { privateKey: string | any; payload: any }) {
+    const signer = ES256KSigner(options.privateKey);
+    let jwt = await createJWT(options.payload, { issuer: this.id, signer });
+    return jwt;
+  }
 
-   //    // TODO: Until the signing library supports Multibase, we'll rely on Jwk for now.
-   //    // Initially we performed transforms to multibase on all our APIs, but changed to Jwk to reduce code.
-   //    const signed = await secp256k1.ES256K.sign(params.payload, params.privateKeyJwk, header);
-   //    return signed;
-   // }
+  /** Returns a signed JWS from the payload. This method does NOT append any extra fields to the payload, but adds "issuer" to header. */
+  public async jws(options: { privateKey: string | any; payload: any }) {
+    const signer = ES256KSigner(options.privateKey);
+    let jwt = await createJWS(options.payload, signer, { issuer: this.id });
+    return jwt;
+  }
 
-   /** Signs a payload and encodes as JWT (JWS). The key should be in string format (hex, base58, base64). Adds "iat", "iss" to payload and "typ" to header. */
-   public async jwt(options: { privateKey: string | any, payload: any }) {
-      const signer = ES256KSigner(options.privateKey);
-      let jwt = await createJWT(options.payload, { issuer: this.id, signer });
-      return jwt;
-   }
+  // public async vc(options: { privateKey: string | any, payload: any }) {
 
-   /** Returns a signed JWS from the payload. This method does NOT append any extra fields to the payload, but adds "issuer" to header. */
-   public async jws(options: { privateKey: string | any, payload: any }) {
-      const signer = ES256KSigner(options.privateKey);
-      let jwt = await createJWS(options.payload, signer, { issuer: this.id });
-      return jwt;
-   }
+  //    const vcPayload: JwtCredentialPayload = {
+  //       sub: this.id,
+  //       nbf: Math.floor(Date.now() / 1000),
+  //       vc: {
+  //         '@context': ['https://www.w3.org/2018/credentials/v1'],
+  //         type: ['VerifiableCredential'],
+  //         credentialSubject: {
+  //           degree: {
+  //             type: 'BachelorDegree',
+  //             name: 'Baccalauréat en musiques numériques'
+  //           }
+  //         }
+  //       }
+  //     }
 
-   // public async vc(options: { privateKey: string | any, payload: any }) {
+  //    const vcJwt = await createVerifiableCredentialJwt(vcPayload, issuer);
+  //    console.log(vcJwt);
 
-   //    const vcPayload: JwtCredentialPayload = {
-   //       sub: this.id,
-   //       nbf: Math.floor(Date.now() / 1000),
-   //       vc: {
-   //         '@context': ['https://www.w3.org/2018/credentials/v1'],
-   //         type: ['VerifiableCredential'],
-   //         credentialSubject: {
-   //           degree: {
-   //             type: 'BachelorDegree',
-   //             name: 'Baccalauréat en musiques numériques'
-   //           }
-   //         }
-   //       }
-   //     }
+  //    const signer = ES256KSigner(options.privateKey);
+  //    let jwt = await createJWT(options.payload, { alg: 'ES256K', issuer: this.id, signer })
+  //    return jwt;
+  // }
 
-   //    const vcJwt = await createVerifiableCredentialJwt(vcPayload, issuer);
-   //    console.log(vcJwt);
+  /** Generate the did.json document for this identity. This is a simple structure with only the identifier. */
+  public did() {
+    return {
+      // '@context': ['https://www.w3.org/ns/did/v1'], // We only implement application/did+json
+      id: this.id,
+    };
+  }
 
+  /** Generates the DID document for the current identity. */
+  public document(options: { service: [] } | any = null) {
+    const data: any = {};
+    // data['@context'] = ['https://www.w3.org/ns/did/v1'];  // We only implement application/did+json
+    data.id = this.id;
+    data.verificationMethod = [this.verificationMethod];
 
-   //    const signer = ES256KSigner(options.privateKey);
-   //    let jwt = await createJWT(options.payload, { alg: 'ES256K', issuer: this.id, signer })
-   //    return jwt;
-   // }
+    if (options?.service) {
+      data.service = options.service.sort(this.ordered);
+    }
 
-   /** Generate the did.json document for this identity. This is a simple structure with only the identifier. */
-   public did() {
-      return {
-         // '@context': ['https://www.w3.org/ns/did/v1'], // We only implement application/did+json
-         id: this.id
-      };
-   }
+    // Get the unique ID of the verification method, this might have extra data to make it unique in the list (#key-1).
+    data.authentication = [this.verificationMethod.id];
+    data.assertionMethod = [this.verificationMethod.id];
 
-   /** Generates the DID document for the current identity. */
-   public document(options: { service: [] } | any = null) {
-      const data: any = {};
-      // data['@context'] = ['https://www.w3.org/ns/did/v1'];  // We only implement application/did+json
-      data.id = this.id;
-      data.verificationMethod = [this.verificationMethod];
+    return data;
+  }
 
-      if (options?.service) {
-         data.service = options.service.sort(this.ordered);
-      }
+  public async getJsonWebKeyPair(keyPair?: secp256k1.Secp256k1KeyPair) {
+    if (!keyPair) {
+      keyPair = await _generateKeyPair();
+    }
 
-      // Get the unique ID of the verification method, this might have extra data to make it unique in the list (#key-1).
-      data.authentication = [this.verificationMethod.id];
-      data.assertionMethod = [this.verificationMethod.id];
+    const { publicKeyJwk, privateKeyJwk } = await keyPair.toJsonWebKeyPair(true);
+    return {
+      publicJwk: publicKeyJwk,
+      privateJwk: privateKeyJwk,
+    };
+  }
 
-      return data;
-   }
+  public async generateKeyPair() {
+    return await _generateKeyPair();
+  }
 
-   public async getJsonWebKeyPair(keyPair?: secp256k1.Secp256k1KeyPair) {
+  public async generateDidPayload(content = {}) {
+    return {
+      operation: 'create',
+      content: content,
+      recovery: await this.getJsonWebKeyPair(), // Generate random keys
+      update: await this.getJsonWebKeyPair(), // Generate random keys
+    };
+  }
 
-      if (!keyPair) {
-         keyPair = await _generateKeyPair();
-      }
+  public async generateOperation(type: string, operation: string, sequence: number, content = {}) {
+    return {
+      type,
+      operation,
+      sequence,
+      content,
+    };
+  }
 
-      const { publicKeyJwk, privateKeyJwk } = await keyPair.toJsonWebKeyPair(true);
-      return {
-         publicJwk: publicKeyJwk,
-         privateJwk: privateKeyJwk
-      }
-   }
+  // async resolve(didUri, options = {}) {
+  //    return fetch((options.nodeEndpoint || 'https://beta.discover.did.microsoft.com/1.0/identifiers/') + didUri)
+  //       .then(response => {
+  //          if (response.status >= 400) throw new Error('Not Found');
+  //          return response.json();
+  //       });
 
-   public async generateKeyPair() {
-      return await _generateKeyPair();
-   }
+  /** Generates the DID document for the current identity. */
+  public configuration2(options: { service: [] } | any = null) {
+    const data: any = {};
+    data['@context'] = [
+      'https://www.w3.org/2018/credentials/v1',
+      'https://identity.foundation/.well-known/did-configuration/v1',
+    ];
+    data.id = this.id;
+    data.verificationMethod = [this.verificationMethod];
 
-   public async generateDidPayload(content = {}) {
-      return {
-         operation: 'create',
-         content: content,
-         recovery: await this.getJsonWebKeyPair(), // Generate random keys
-         update: await this.getJsonWebKeyPair() // Generate random keys
-      };
-   }
+    data.issuer = this.id;
+    // data.issuanceDate =
 
-   public async generateOperation(type: string, operation: string, sequence: number, content = {}) {
-      return {
-         type,
-         operation,
-         sequence,
-         content
-      };
-   }
+    if (options?.service) {
+      data.service = options.service.sort(this.ordered);
+    }
 
-   // async resolve(didUri, options = {}) {
-   //    return fetch((options.nodeEndpoint || 'https://beta.discover.did.microsoft.com/1.0/identifiers/') + didUri)
-   //       .then(response => {
-   //          if (response.status >= 400) throw new Error('Not Found');
-   //          return response.json();
-   //       });
+    return data;
+  }
 
-   /** Generates the DID document for the current identity. */
-   public configuration2(options: { service: [] } | any = null) {
-      const data: any = {};
-      data['@context'] = ['https://www.w3.org/2018/credentials/v1', 'https://identity.foundation/.well-known/did-configuration/v1'];
-      data.id = this.id;
-      data.verificationMethod = [this.verificationMethod];
+  /** Generates an issuer based on the identity */
+  public issuer(options: { privateKey: Uint8Array | string | any }): Issuer {
+    return {
+      did: this.id,
+      signer: ES256KSigner(options.privateKey),
+      alg: 'ES256K',
+    };
+  }
 
-      data.issuer = this.id;
-      // data.issuanceDate = 
+  /** Generates a well known configuration for DID resolver host. */
+  public async configurationVerifiableCredential(domain: string, issuer: any) {
+    const date = new Date();
+    const expiredate = new Date(new Date().setFullYear(date.getFullYear() + 100));
+    let expiredateNumber = Math.floor(expiredate.getTime() / 1000);
 
-      if (options?.service) {
-         data.service = options.service.sort(this.ordered);
-      }
+    // Due to issue with Microsoft middleware for JWT validation, we cannot go higher than this expiration date.
+    // Source: https://stackoverflow.com/questions/43593074/jwt-validation-fails/46654832#46654832
+    if (expiredateNumber > 2147483647) {
+      expiredateNumber = 2147483647;
+    }
 
-      return data;
-   }
+    const currentDateNumber = Math.floor(date.getTime() / 1000);
 
-   /** Generates an issuer based on the identity */
-   public issuer(options: { privateKey: Uint8Array | string | any }): Issuer {
-      return {
-         did: this.id,
-         signer: ES256KSigner(options.privateKey),
-         alg: 'ES256K'
-      };
-   }
+    const vcPayload: JwtCredentialPayload = {
+      // iss: this.id, // This is automatically added by the library and not needed.
+      exp: expiredateNumber,
+      iat: currentDateNumber,
+      nbf: currentDateNumber,
+      sub: this.id,
+      vc: {
+        '@context': [
+          'https://www.w3.org/2018/credentials/v1',
+          'https://identity.foundation/.well-known/did-configuration/v1',
+        ],
+        type: ['VerifiableCredential', 'DomainLinkageCredential'],
+        credentialSubject: {
+          id: this.id,
+          origin: domain,
+        },
+        //"expirationDate": expiredate.toISOString(),
+        //"issuanceDate": date.toISOString(),
+        //"issuer": this.id,
+      },
+    };
 
-   /** Generates a well known configuration for DID resolver host. */
-   public async configurationVerifiableCredential(domain: string, issuer: any) {
-      const date = new Date();
-      const expiredate = new Date(new Date().setFullYear(date.getFullYear() + 100));
-      let expiredateNumber = Math.floor(expiredate.getTime() / 1000);
+    const vcJwt = await createVerifiableCredentialJwt(vcPayload, issuer);
 
-      // Due to issue with Microsoft middleware for JWT validation, we cannot go higher than this expiration date.
-      // Source: https://stackoverflow.com/questions/43593074/jwt-validation-fails/46654832#46654832
-      if (expiredateNumber > 2147483647) {
-         expiredateNumber = 2147483647;
-      }
+    return vcJwt;
+  }
 
-      const currentDateNumber = Math.floor(date.getTime() / 1000);
+  /** Generates a well known configuration for DID resolver host. */
+  public async configuration(domain: string, issuer: any) {
+    var vc = await this.configurationVerifiableCredential(domain, issuer);
 
-      const vcPayload: JwtCredentialPayload = {
-         // iss: this.id, // This is automatically added by the library and not needed.
-         exp: expiredateNumber,
-         iat: currentDateNumber,
-         nbf: currentDateNumber,
-         sub: this.id,
-         vc: {
-            '@context': ['https://www.w3.org/2018/credentials/v1', 'https://identity.foundation/.well-known/did-configuration/v1'],
-            type: ['VerifiableCredential', 'DomainLinkageCredential'],
-            credentialSubject: {
-               'id': this.id,
-               'origin': domain
-            },
-            //"expirationDate": expiredate.toISOString(),
-            //"issuanceDate": date.toISOString(),
-            //"issuer": this.id,
-         }
-      }
+    var vcNormalized = normalizeCredential(vc, true);
+    // var vcDecoded = decodeJWT(vc); // This is wrong and does not convert the JWT-VC according to the "vc-data-model" specification. Use normalize from "did-jwt-vc" library.
 
-      const vcJwt = await createVerifiableCredentialJwt(vcPayload, issuer);
+    const data: any = {};
+    data['@context'] = 'https://identity.foundation/.well-known/did-configuration/v1';
 
-      return vcJwt;
-   }
+    data.linked_dids = [vcNormalized, vc];
 
-   /** Generates a well known configuration for DID resolver host. */
-   public async configuration(domain: string, issuer: any) {
-
-      var vc = await this.configurationVerifiableCredential(domain, issuer);
-
-      var vcNormalized = normalizeCredential(vc, true);
-      // var vcDecoded = decodeJWT(vc); // This is wrong and does not convert the JWT-VC according to the "vc-data-model" specification. Use normalize from "did-jwt-vc" library.
-
-      const data: any = {};
-      data['@context'] = 'https://identity.foundation/.well-known/did-configuration/v1';
-
-      data.linked_dids = [
-         vcNormalized, vc
-      ];
-
-      return data;
-   }
+    return data;
+  }
 }
 
-export interface Identity {
-
-}
+export interface Identity {}
 
 // JWK example:
 // const { publicKeyJwk, privateKeyJwk } = await keyPair.toJsonWebKeyPair(true);

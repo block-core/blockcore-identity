@@ -1,5 +1,3 @@
-import { getResolver } from './resolver'
+import { getResolver } from './resolver';
 
-export {
-  getResolver
-}
+export { getResolver };

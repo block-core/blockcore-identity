@@ -15,7 +15,7 @@
     "lint": "tslint -p tsconfig.json"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@blockcore/message": "^1.0.0",
     "@transmute/did-key-common": "^0.2.1-unstable.42",
