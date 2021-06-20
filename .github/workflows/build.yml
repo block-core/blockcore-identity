@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     
     env:
-      PROJECT_NAME: 'Blockcore.Identity'
+      PROJECT_NAME: 'blockcore-identity'
 
     steps:
 
@@ -32,21 +32,28 @@ jobs:
 
     - name: Package Name
       run: |
-        echo RELEASE_NAME=${{ env.PROJECT_NAME }}-${{ env.VERSION }}.zip >> $GITHUB_ENV
+        echo RELEASE_NAME=${{ env.PROJECT_NAME }}-${{ env.VERSION }}.tgz >> $GITHUB_ENV
       shell: bash
 
-    - name: Build and Test
+    - name: Install and Build
       run: |
         npm install
         npm run build
+
+    # - name: Display structure of downloaded files
+    #   run: ls -R
+
+    - name: Run Tests
+      run: |
         npm run test
 
     - name: Package
-      run: zip -r ${{env.RELEASE_NAME}} package.json ./build/
+      run: |
+        npm pack
 
     - uses: actions/upload-artifact@v1
       with:
-        name: blockcore-identity-preview-${{env.VERSION}}
+        name: ${{env.PROJECT_NAME}}-preview-${{env.VERSION}}
         path: "${{env.RELEASE_NAME}}"
 
     - name: Release
