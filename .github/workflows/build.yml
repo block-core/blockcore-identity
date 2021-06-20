@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Build and Push
+    name: Build, Test and Release
     runs-on: ubuntu-latest
     
     env:
@@ -35,7 +35,7 @@ jobs:
         echo RELEASE_NAME=${{ env.PROJECT_NAME }}-${{ env.VERSION }}.zip >> $GITHUB_ENV
       shell: bash
 
-    - name: Build
+    - name: Build and Test
       run: |
         npm install
         npm run build
