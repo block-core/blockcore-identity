@@ -7,20 +7,18 @@ on:
 
 jobs:
   build:
-    name: Build and Push Docker Image
+    name: Download and Push Package
     runs-on: ubuntu-latest
+
+    env:
+      PROJECT_NAME: 'blockcore-identity'
 
     steps:
     - uses: actions/checkout@master
 
-    - name: Variables
-      run: |
-        echo VERSION=$(npm run version --silent) >> $GITHUB_ENV
-      shell: bash
-
     - name: Package Name
       run: |
-        echo RELEASE_NAME=${{ env.PROJECT_NAME }}-${{ env.VERSION }}.tgz >> $GITHUB_ENV
+        echo RELEASE_NAME=${{ env.PROJECT_NAME }}-${{ github.event.release.tag_name }}.tgz >> $GITHUB_ENV
       shell: bash
 
     - name: Log Variables

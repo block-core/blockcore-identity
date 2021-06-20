@@ -37,7 +37,7 @@ jobs:
 
     - name: Install and Build
       run: |
-        npm install
+        npm-ci
         npm run build
 
     # - name: Display structure of downloaded files
