@@ -1,6 +1,6 @@
 {
   "payload": {
-    "iat": 1620411728,
+    "iat": 1620666618,
     "exp": 2147483647,
     "vc": {
       "@context": [
@@ -16,7 +16,7 @@
         "origin": "https://www.blockcore.net"
       }
     },
-    "nbf": 1620411728,
+    "nbf": 1620666618,
     "sub": "did:is:PMW1Ks7h4brpN8FdDVLwhPDKJ7LdA7mVdd",
     "iss": "did:is:PMW1Ks7h4brpN8FdDVLwhPDKJ7LdA7mVdd"
   },
@@ -68,5 +68,5 @@
     "controller": "did:is:PMW1Ks7h4brpN8FdDVLwhPDKJ7LdA7mVdd",
     "publicKeyBase58": "wAAADkMFQkqxaUPB8jGq4ZoJVsaK9Y5M8riM76zugM6d"
   },
-  "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NksifQ.eyJpYXQiOjE2MjA0MTE3MjgsImV4cCI6MjE0NzQ4MzY0NywidmMiOnsiQGNvbnRleHQiOlsiaHR0cHM6Ly93d3cudzMub3JnLzIwMTgvY3JlZGVudGlhbHMvdjEiLCJodHRwczovL2lkZW50aXR5LmZvdW5kYXRpb24vLndlbGwta25vd24vZGlkLWNvbmZpZ3VyYXRpb24vdjEiXSwidHlwZSI6WyJWZXJpZmlhYmxlQ3JlZGVudGlhbCIsIkRvbWFpbkxpbmthZ2VDcmVkZW50aWFsIl0sImNyZWRlbnRpYWxTdWJqZWN0Ijp7ImlkIjoiZGlkOmlzOlBNVzFLczdoNGJycE44RmREVkx3aFBES0o3TGRBN21WZGQiLCJvcmlnaW4iOiJodHRwczovL3d3dy5ibG9ja2NvcmUubmV0In19LCJuYmYiOjE2MjA0MTE3MjgsInN1YiI6ImRpZDppczpQTVcxS3M3aDRicnBOOEZkRFZMd2hQREtKN0xkQTdtVmRkIiwiaXNzIjoiZGlkOmlzOlBNVzFLczdoNGJycE44RmREVkx3aFBES0o3TGRBN21WZGQifQ.NU9qHVHAp6MlDKKFwXUHt5xYu2M3U4Uy7bupj7pNcaWVODrK4xvrHfju9fZr9mObY__iXXBcAfAmJ__0Fu_HBQ"
+  "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NksifQ.eyJpYXQiOjE2MjA2NjY2MTgsImV4cCI6MjE0NzQ4MzY0NywidmMiOnsiQGNvbnRleHQiOlsiaHR0cHM6Ly93d3cudzMub3JnLzIwMTgvY3JlZGVudGlhbHMvdjEiLCJodHRwczovL2lkZW50aXR5LmZvdW5kYXRpb24vLndlbGwta25vd24vZGlkLWNvbmZpZ3VyYXRpb24vdjEiXSwidHlwZSI6WyJWZXJpZmlhYmxlQ3JlZGVudGlhbCIsIkRvbWFpbkxpbmthZ2VDcmVkZW50aWFsIl0sImNyZWRlbnRpYWxTdWJqZWN0Ijp7ImlkIjoiZGlkOmlzOlBNVzFLczdoNGJycE44RmREVkx3aFBES0o3TGRBN21WZGQiLCJvcmlnaW4iOiJodHRwczovL3d3dy5ibG9ja2NvcmUubmV0In19LCJuYmYiOjE2MjA2NjY2MTgsInN1YiI6ImRpZDppczpQTVcxS3M3aDRicnBOOEZkRFZMd2hQREtKN0xkQTdtVmRkIiwiaXNzIjoiZGlkOmlzOlBNVzFLczdoNGJycE44RmREVkx3aFBES0o3TGRBN21WZGQifQ.nr3G-WIUtfNRFTnWGnkIjOmxQx3hJZfYJFwJPgg18qzQ8OMNj3Q8xhjeqc1m6Ieil-m3JKVGGZSRnsJGu7QLYg"
 }

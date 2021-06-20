@@ -128,14 +128,27 @@ export async function app() {
 
    save('operation-create.json', JSON.stringify(operationCreateJws, null, 2));
 
-   var operationPayload = await identity.generateOperation('identity', 'replace', 1, jws);
+   // var operationPayload = await identity.generateOperation('identity', 'replace', 1, jws);
 
-   const operationReplaceJws = await identity.jws({
-      payload: operationPayload,
-      privateKey: didKeyPair.privateKeyBuffer?.toString('hex')
-   });
+   // const operationReplaceJws = await identity.jws({
+   //    payload: operationPayload,
+   //    privateKey: didKeyPair.privateKeyBuffer?.toString('hex')
+   // });
 
-   save('operation-replace.json', JSON.stringify(operationReplaceJws, null, 2));
+   // save('operation-replace.json', JSON.stringify(operationReplaceJws, null, 2));
+
+   for (var i = 1; i < 11; i++) {
+
+      var operationPayload = await identity.generateOperation('identity', 'replace', i, jws);
+
+      const operationReplaceJws = await identity.jws({
+         payload: operationPayload,
+         privateKey: didKeyPair.privateKeyBuffer?.toString('hex')
+      });
+
+      save('operation-replace-' + i + '.json', JSON.stringify(operationReplaceJws, null, 2));
+   }
+
 
    var verified = await verifyJWT(didJwt, { resolver: resolver });
    save('vc-verified.json', JSON.stringify(verified, null, 2));
