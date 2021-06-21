@@ -5,7 +5,6 @@
 import base64url from 'base64url'; // Should we replicate this code to avoid dependency? It's a very simple utility.
 import utf8 from 'utf8';
 import { createJWS, createJWT, decodeJWT, ES256KSigner } from 'did-jwt';
-import fetch from 'cross-fetch';
 import { DIDDocument, ParsedDID, Resolver } from 'did-resolver';
 import randomBytes from 'randombytes';
 import * as secp256k1 from '@transmute/did-key-secp256k1';
@@ -180,13 +179,6 @@ export class BlockcoreIdentity {
       content,
     };
   }
-
-  // async resolve(didUri, options = {}) {
-  //    return fetch((options.nodeEndpoint || 'https://beta.discover.did.microsoft.com/1.0/identifiers/') + didUri)
-  //       .then(response => {
-  //          if (response.status >= 400) throw new Error('Not Found');
-  //          return response.json();
-  //       });
 
   /** Generates the DID document for the current identity. */
   public configuration2(options: { service: [] } | any = null) {

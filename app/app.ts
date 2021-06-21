@@ -1,7 +1,6 @@
 import { decodeJWT, verifyJWT } from 'did-jwt';
 import { Resolver } from 'did-resolver';
 import { JwtCredentialPayload, createVerifiableCredentialJwt, JwtPresentationPayload, createVerifiablePresentationJwt, verifyCredential, verifyPresentation } from 'did-jwt-vc';
-
 import { getResolver } from '../lib/blockcore-did-resolver';
 import { BlockcoreIdentity, BlockcoreIdentityTools } from '../lib/blockcore-identity';
 import { bitcoin } from 'bitcoinjs-lib/types/networks';

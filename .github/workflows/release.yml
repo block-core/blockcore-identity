@@ -41,6 +41,7 @@ jobs:
     - name: Display structure of downloaded files
       run: ls -R
 
-    - run: npm publish ${{env.RELEASE_NAME}} --access public --dry-run
+    - name: NPM Publish
+      run: npm publish ${{env.RELEASE_NAME}} --access public --dry-run
       env:
         NODE_AUTH_TOKEN: ${{secrets.npm_token}}

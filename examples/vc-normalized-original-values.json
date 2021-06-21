@@ -1,5 +1,5 @@
 {
-  "iat": 1620666618,
+  "iat": 1624317088,
   "exp": 2147483647,
   "vc": {
     "@context": [
@@ -15,7 +15,7 @@
       "origin": "https://www.blockcore.net"
     }
   },
-  "nbf": 1620666618,
+  "nbf": 1624317088,
   "sub": "did:is:PMW1Ks7h4brpN8FdDVLwhPDKJ7LdA7mVdd",
   "iss": "did:is:PMW1Ks7h4brpN8FdDVLwhPDKJ7LdA7mVdd",
   "credentialSubject": {
@@ -33,10 +33,10 @@
     "https://www.w3.org/2018/credentials/v1",
     "https://identity.foundation/.well-known/did-configuration/v1"
   ],
-  "issuanceDate": "2021-05-10T17:10:18.000Z",
+  "issuanceDate": "2021-06-21T23:11:28.000Z",
   "expirationDate": "2038-01-19T03:14:07.000Z",
   "proof": {
     "type": "JwtProof2020",
-    "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NksifQ.eyJpYXQiOjE2MjA2NjY2MTgsImV4cCI6MjE0NzQ4MzY0NywidmMiOnsiQGNvbnRleHQiOlsiaHR0cHM6Ly93d3cudzMub3JnLzIwMTgvY3JlZGVudGlhbHMvdjEiLCJodHRwczovL2lkZW50aXR5LmZvdW5kYXRpb24vLndlbGwta25vd24vZGlkLWNvbmZpZ3VyYXRpb24vdjEiXSwidHlwZSI6WyJWZXJpZmlhYmxlQ3JlZGVudGlhbCIsIkRvbWFpbkxpbmthZ2VDcmVkZW50aWFsIl0sImNyZWRlbnRpYWxTdWJqZWN0Ijp7ImlkIjoiZGlkOmlzOlBNVzFLczdoNGJycE44RmREVkx3aFBES0o3TGRBN21WZGQiLCJvcmlnaW4iOiJodHRwczovL3d3dy5ibG9ja2NvcmUubmV0In19LCJuYmYiOjE2MjA2NjY2MTgsInN1YiI6ImRpZDppczpQTVcxS3M3aDRicnBOOEZkRFZMd2hQREtKN0xkQTdtVmRkIiwiaXNzIjoiZGlkOmlzOlBNVzFLczdoNGJycE44RmREVkx3aFBES0o3TGRBN21WZGQifQ.nr3G-WIUtfNRFTnWGnkIjOmxQx3hJZfYJFwJPgg18qzQ8OMNj3Q8xhjeqc1m6Ieil-m3JKVGGZSRnsJGu7QLYg"
+    "jwt": "eyJhbGciOiJFUzI1NksiLCJ0eXAiOiJKV1QifQ.eyJpYXQiOjE2MjQzMTcwODgsImV4cCI6MjE0NzQ4MzY0NywidmMiOnsiQGNvbnRleHQiOlsiaHR0cHM6Ly93d3cudzMub3JnLzIwMTgvY3JlZGVudGlhbHMvdjEiLCJodHRwczovL2lkZW50aXR5LmZvdW5kYXRpb24vLndlbGwta25vd24vZGlkLWNvbmZpZ3VyYXRpb24vdjEiXSwidHlwZSI6WyJWZXJpZmlhYmxlQ3JlZGVudGlhbCIsIkRvbWFpbkxpbmthZ2VDcmVkZW50aWFsIl0sImNyZWRlbnRpYWxTdWJqZWN0Ijp7ImlkIjoiZGlkOmlzOlBNVzFLczdoNGJycE44RmREVkx3aFBES0o3TGRBN21WZGQiLCJvcmlnaW4iOiJodHRwczovL3d3dy5ibG9ja2NvcmUubmV0In19LCJuYmYiOjE2MjQzMTcwODgsInN1YiI6ImRpZDppczpQTVcxS3M3aDRicnBOOEZkRFZMd2hQREtKN0xkQTdtVmRkIiwiaXNzIjoiZGlkOmlzOlBNVzFLczdoNGJycE44RmREVkx3aFBES0o3TGRBN21WZGQifQ.mDXisIE_MVnF5LGRcB5Vb0qT6J-fvss992sxyDx1rvRhjtGTEqlaBPu6KWedVw__fuC3t_Cy0tMJIWjKvLFVBQ"
   }
 }
