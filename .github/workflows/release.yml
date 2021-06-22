@@ -42,6 +42,6 @@ jobs:
       run: ls -R
 
     - name: NPM Publish
-      run: npm publish ${{env.RELEASE_NAME}} --access public --dry-run
+      run: npm publish ${{env.RELEASE_NAME}} --access public
       env:
         NODE_AUTH_TOKEN: ${{secrets.npm_token}}
