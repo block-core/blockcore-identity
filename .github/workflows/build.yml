@@ -19,6 +19,11 @@ jobs:
     - uses: actions/checkout@master
       name: Checkout
 
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '14.x'
+        registry-url: 'https://registry.npmjs.org'
+
     # Should we force a version or attempt to rely on pre-installed on build agent / production environment?
     # - name: Setup Node.js (${{ matrix.node_version }})
     #   uses: actions/setup-node@v1
