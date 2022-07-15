@@ -68,5 +68,5 @@ jobs:
         files: "${{env.RELEASE_NAME}}"
         draft: true
         prerelease: false
-        name: "Blockcore Identity (Release ${{env.VERSION}})"
+        name: "Blockcore Identity (${{env.VERSION}})"
         tag: ${{env.VERSION}}
