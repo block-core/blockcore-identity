@@ -1,3 +1,11 @@
+## <small>0.0.3 (2022-11-16)</small>
+
+* Update packages and remove old unused packages ([7f7ce40](https://github.com/block-core/blockcore-identity/commit/7f7ce40))
+* Update used packages ([743f509](https://github.com/block-core/blockcore-identity/commit/743f509))
+* Update version and changelog ([7a9e45d](https://github.com/block-core/blockcore-identity/commit/7a9e45d))
+
+
+
 ## <small>0.0.2 (2022-11-16)</small>
 
 * Add updated generated examples ([025e78e](https://github.com/block-core/blockcore-identity/commit/025e78e))
