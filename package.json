@@ -1,6 +1,6 @@
 {
   "name": "@blockcore/identity",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -18,7 +18,8 @@
     "prod": "tsc && node ./lib/app/index.js",
     "start": "node lib/app/index.js",
     "examples": "node lib/test/examples.js",
-    "version": "node -p \"require('./package.json').version\""
+    "version": "node -p \"require('./package.json').version\"",
+    "changelog": "conventional-changelog -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md"
   },
   "repository": {
     "type": "git",
