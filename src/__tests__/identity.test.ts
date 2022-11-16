@@ -1,11 +1,32 @@
 import { OperationCanceledException } from 'typescript';
-import { BlockcoreIdentityTools } from '../index';
+import { BlockcoreIdentityTools, BlockcoreIdentity } from '../index';
 
-test('My Identity', () => {
-  var identity = new BlockcoreIdentityTools();
-  var network = identity.getProfileNetwork();
+test('My Identity', async () => {
+  const tool = new BlockcoreIdentityTools();
+  const privateKey = Uint8Array.from([
+    224, 238, 59, 150, 73, 84, 228, 234, 104, 62, 83, 160, 122, 31, 108, 129, 74, 29, 104, 195, 192, 81, 158, 11, 167,
+    100, 217, 121, 110, 12, 178, 14,
+  ]);
 
-  expect(network.pubKeyHash).toBe(55);
-  expect(network.scriptHash).toBe(117);
-  expect(network.bech32).toBe('id');
+  const signer = tool.getSigner(privateKey);
+  const publicKey = tool.getSchnorrPublicKeyFromPrivateKey(privateKey);
+  const verificationMethod = tool.getVerificationMethod(publicKey, 1);
+  const identity = new BlockcoreIdentity(verificationMethod);
+
+  const didDocument = identity.document({
+    service: [
+      {
+        id: '#blockexplorer',
+        type: 'BlockExplorer',
+        serviceEndpoint: 'https://explorer.blockcore.net',
+      },
+    ],
+  });
+
+  expect(didDocument != null).toBeTruthy();
+
+  const operation = identity.operation('identity', 'create', 0, didDocument);
+  const jws = await identity.sign(signer, operation);
+
+  console.log(jws);
 });

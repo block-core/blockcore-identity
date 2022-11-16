@@ -54,7 +54,7 @@ export class BlockcoreIdentityTools {
     const did = `${method}:${publicKeyHex}`;
 
     return {
-      id: `${did}#keys-${keyIndex}`,
+      id: `${did}#key${keyIndex}`,
       type: 'JsonWebKey2020',
       controller: did,
       publicKeyJwk: this.getJsonWebKey(publicKeyHex),

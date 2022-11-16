@@ -7,7 +7,7 @@ import { VerificationMethod } from './interfaces';
 
 /** Use to simplify operations around handling of DID Documents for the "did:is" DID Method. */
 export class BlockcoreIdentity {
-  public static readonly PREFIX = 'did:is:';
+  public static readonly PREFIX = 'did:is';
 
   constructor(private verificationMethod: VerificationMethod) {}
 
@@ -50,7 +50,7 @@ export class BlockcoreIdentity {
   }
 
   /** Generates an operation object that is ready to be signed. */
-  async operation(type: string, operation: string, sequence: number, content = {}) {
+  operation(type: string, operation: string, sequence: number, content = {}) {
     return {
       type,
       operation,
