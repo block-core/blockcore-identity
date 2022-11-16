@@ -1,107 +1,90 @@
-import { keyUtils, Secp256k1KeyPair } from '@transmute/did-key-secp256k1';
-import { ISecp256k1PrivateKeyJwk } from '@transmute/did-key-secp256k1/dist/keyUtils';
-import { payments } from 'bitcoinjs-lib';
-import randomBytes from 'randombytes';
-import { BlockcoreIdentity2 } from './identity';
-import { VerificationMethodWithPrivateKey } from './interfaces';
-import * as bs58 from 'bs58';
+import { BlockcoreIdentity } from './identity';
+import { VerificationMethod } from './interfaces';
+import * as secp from '@noble/secp256k1';
+import { ES256KSigner } from 'did-jwt';
+import { base64url } from '@scure/base';
 
 export class BlockcoreIdentityTools {
-  /** Get the address (identity) of this DID. Returned format is "did:is:[identity]" */
-  getIdentity(options: { publicKeyBase58?: string | any; publicKeyBuffer?: Buffer }) {
-    // If the buffer is not supplied, then we'll convert base58 to buffer.
-    if (!options.publicKeyBuffer) {
-      options.publicKeyBuffer = bs58.decode(options.publicKeyBase58);
-    }
-
-    const { address } = payments.p2pkh({
-      pubkey: options.publicKeyBuffer,
-      network: this.getProfileNetwork(),
-    });
-
-    return `${BlockcoreIdentity2.PREFIX}${address}`;
+  private numTo32String(num: number | bigint): string {
+    return num.toString(16).padStart(64, '0');
   }
 
-  getIdentifiers(identity: string | any): { id: string; controller: string } {
+  /** Returns the public key in schnorr format. */
+  getSchnorrPublicKeyFromPrivateKey(privateKey: Uint8Array): Uint8Array {
+    return secp.schnorr.getPublicKey(privateKey);
+  }
+
+  bytesToHex(publicKey: Uint8Array) {
+    return secp.utils.bytesToHex(publicKey);
+  }
+
+  /** Takes a public key (either Schnorr or Edsca) and converts it into a schnorr public key and formats as hex. */
+  getSchnorrPublicKeyHex(publicKey: Uint8Array) {
+    if (publicKey.length === 33) {
+      publicKey = this.convertEdcsaPublicKeyToSchnorr(publicKey);
+    }
+
+    return this.bytesToHex(publicKey);
+  }
+
+  convertEdcsaPublicKeyToSchnorr(publicKey: Uint8Array) {
+    if (publicKey.length != 33) {
+      throw Error('The public key must be compressed EDCSA public key of length 33.');
+    }
+
+    const schnorrPublicKey = publicKey.slice(1);
+    return schnorrPublicKey;
+  }
+
+  getSigner(privateKey: Uint8Array) {
+    return ES256KSigner(privateKey);
+  }
+
+  generateKey(): Uint8Array {
+    return secp.utils.randomPrivateKey();
+  }
+
+  /** Get a VerificationMethod structure from a public key. */
+  getVerificationMethod(
+    publicKey: Uint8Array,
+    keyIndex: number = 1,
+    method: string = BlockcoreIdentity.PREFIX,
+  ): VerificationMethod {
+    const publicKeyHex = this.bytesToHex(publicKey);
+    const did = `${method}:${publicKeyHex}`;
+
     return {
-      id: `${identity}#key-1`,
-      controller: `${identity}`,
+      id: `${did}#keys-${keyIndex}`,
+      type: 'JsonWebKey2020',
+      controller: did,
+      publicKeyJwk: this.getJsonWebKey(publicKeyHex),
     };
   }
 
-  getProfileNetwork() {
+  /** Returns a pair of JSON Web Key that holds public key and private key. */
+  getKeyPair(privateKey: Uint8Array) {
+    const publicKey = secp.schnorr.getPublicKey(privateKey);
+    const publicKeyHex = secp.utils.bytesToHex(publicKey);
+
+    const d = base64url.encode(privateKey);
+    const publicJwk = this.getJsonWebKey(publicKeyHex);
+    const privateJwk = { ...publicJwk, d };
+
+    return { publicJwk, privateJwk };
+  }
+
+  /** Creates a JsonWebKey from a public key hex. */
+  getJsonWebKey(publicKeyHex: string): JsonWebKey {
+    const pub = secp.Point.fromHex(publicKeyHex);
+    const x = secp.utils.hexToBytes(this.numTo32String(pub.x));
+    const y = secp.utils.hexToBytes(this.numTo32String(pub.y));
+
     return {
-      messagePrefix: '\x18Identity Signed Message:\n',
-      bech32: 'id',
-      bip32: {
-        public: 0x0488b21e,
-        private: 0x0488ade4,
-      },
-      pubKeyHash: 55,
-      scriptHash: 117,
-      wif: 0x08,
-    };
-  }
-
-  /** Generates a new pair of public and private key that can be used for an Blockcore Identity. */
-  async generateKeyPair(): Promise<Secp256k1KeyPair> {
-    const keyPair = await Secp256k1KeyPair.generate({
-      secureRandom: () => randomBytes(32),
-    });
-
-    const publicKeyBase58 = keyUtils.publicKeyBase58FromPublicKeyHex(
-      Buffer.from(keyPair.publicKeyBuffer).toString('hex'),
-    );
-
-    const identity = this.getIdentity({ publicKeyBase58 });
-    const identifiers = this.getIdentifiers(identity);
-
-    keyPair.id = identifiers.id;
-    keyPair.controller = identifiers.controller;
-
-    return keyPair;
-  }
-
-  /** Used to create an instance of the key pair from base58/hex formats. The public key must be in base58 encoding. */
-  async keyPairFrom(options: {
-    publicKeyBase58: string | any;
-    privateKeyBase58?: string;
-    privateKeyHex?: string;
-    privateKeyJwk?: string | any | ISecp256k1PrivateKeyJwk;
-  }): Promise<Secp256k1KeyPair> {
-    if (options.privateKeyHex && options.privateKeyHex.startsWith('0x')) {
-      options.privateKeyHex = options.privateKeyHex.substring(2);
-    }
-
-    const identity = this.getIdentity(options);
-    const identifiers = this.getIdentifiers(identity);
-
-    options = Object.assign(options, identifiers);
-
-    // Get a new key instance parsed from either base58, hex or jwk.
-    // The public key we require to base58, because we must include it in the options to override defaults.
-    const key = await Secp256k1KeyPair.from(options);
-
-    return key;
-  }
-
-  /** Converts the KeyPair and returns an verificationMethod structure with multibase public key. */
-  convertToMultibase(key: Secp256k1KeyPair | any): VerificationMethodWithPrivateKey {
-    key.publicKeyMultibase = 'z' + key.publicKeyBase58;
-    delete key.publicKeyBase58;
-
-    key.privateKeyMultibase = 'z' + key.privateKeyBase58;
-    delete key.privateKeyBase58;
-
-    return key;
-  }
-
-  removePrivateKey(verificationMethod: VerificationMethodWithPrivateKey) {
-    return {
-      id: verificationMethod.id,
-      type: verificationMethod.type,
-      controller: verificationMethod.controller,
-      publicKeyMultibase: verificationMethod.controller,
+      kty: 'EC',
+      crv: 'secp256k1',
+      x: base64url.encode(x), // This version of base64url uses padding.
+      y: base64url.encode(y), // Without padding: Buffer.from(bytesOfX).toString('base64url')
+      // Example from did-jwt: bytesToBase64url(hexToBytes(kp.getPublic().getY().toString('hex')))
     };
   }
 }
