@@ -8,8 +8,31 @@ Library that helps working with DIDs (decentralized identities) on Blockcore and
 npm install @blockcore/identity
 ```
 
-```ts
+Example usage:
 
+```ts
+const privateKey = Uint8Array.from([
+  224, 238, 59, 150, 73, 84, 228, 234, 104, 62, 83, 160, 122, 31, 108, 129, 74, 29, 104, 195, 192, 81, 158, 11, 167,
+  100, 217, 121, 110, 12, 178, 14,
+]);
+
+const tool = new BlockcoreIdentityTools();
+const signer = tool.getSigner(privateKey);
+const publicKey = tool.getSchnorrPublicKeyFromPrivateKey(privateKey);
+const verificationMethod = tool.getVerificationMethod(publicKey, 1);
+
+const identity = new BlockcoreIdentity(verificationMethod);
+const didDocument = identity.document({
+  service: [
+    {
+      id: '#blockexplorer',
+      type: 'BlockExplorer',
+      serviceEndpoint: 'https://explorer.blockcore.net',
+    },
+  ],
+});
+const operation = identity.operation('identity', 'create', 0, didDocument);
+const jws = await identity.sign(signer, operation);
 ```
 
 ## Building and Testing
