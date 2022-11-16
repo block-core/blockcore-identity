@@ -45,7 +45,7 @@ test('Generate Examples', async () => {
   const keyPair = tool.getKeyPair(privateKey);
   save('web-key-pair.json', JSON.stringify(keyPair, null, 2));
 
-  for (var i = 1; i < 11; i++) {
+  for (var i = 1; i < 5; i++) {
     var operationPayload = await identity.operation('identity', 'replace', i, jws);
 
     const replacement = await identity.sign(signer, operation);
