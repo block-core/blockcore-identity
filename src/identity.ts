@@ -50,11 +50,11 @@ export class BlockcoreIdentity {
   }
 
   /** Generates an operation object that is ready to be signed. */
-  operation(type: string, operation: string, sequence: number, content = {}) {
+  operation(type: string, operation: string, version: number, content = {}) {
     return {
       type,
       operation,
-      sequence,
+      version,
       content,
     };
   }

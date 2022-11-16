@@ -47,14 +47,14 @@ export class BlockcoreIdentityTools {
   /** Get a VerificationMethod structure from a public key. */
   getVerificationMethod(
     publicKey: Uint8Array,
-    keyIndex: number = 1,
+    keyIndex: number = 0,
     method: string = BlockcoreIdentity.PREFIX,
   ): VerificationMethod {
     const publicKeyHex = this.bytesToHex(publicKey);
     const did = `${method}:${publicKeyHex}`;
 
     return {
-      id: `${did}#key${keyIndex}`,
+      id: `#key${keyIndex}`,
       type: 'JsonWebKey2020',
       controller: did,
       publicKeyJwk: this.getJsonWebKey(publicKeyHex),
