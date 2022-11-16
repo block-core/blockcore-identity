@@ -24,7 +24,7 @@ async function _generateKeyPair() {
 }
 
 /** Blockcore DID only supports secp256k so APIs and code is simplified compared to variuos other implementations. */
-export class BlockcoreIdentity {
+export class BlockcoreIdentity2 {
   public static readonly PREFIX = 'did:is:';
   public readonly id: string;
 

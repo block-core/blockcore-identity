@@ -1,6 +1,6 @@
-import { BlockcoreIdentity, Identity } from './identity';
+import { BlockcoreIdentity2, Identity } from './identity';
 import { BlockcoreIdentityTools } from './tools';
 
-export { BlockcoreIdentity, Identity, BlockcoreIdentityTools };
+export { BlockcoreIdentity2, Identity, BlockcoreIdentityTools };
 
 export * from './interfaces';

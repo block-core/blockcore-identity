@@ -42,7 +42,7 @@ test('Generate Examples', async () => {
   save('web-key-pair.json', JSON.stringify(keyPairWebKey, null, 2));
 
   // Create an instance of Blockcore Identity using only public key.
-  const identity = new BlockcoreIdentity(keyPairDid.toKeyPair(false));
+  const identity = new BlockcoreIdentity2(keyPairDid.toKeyPair(false));
 
   // Content for the DID document.
   const services = [

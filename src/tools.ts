@@ -2,7 +2,7 @@ import { keyUtils, Secp256k1KeyPair } from '@transmute/did-key-secp256k1';
 import { ISecp256k1PrivateKeyJwk } from '@transmute/did-key-secp256k1/dist/keyUtils';
 import { payments } from 'bitcoinjs-lib';
 import randomBytes from 'randombytes';
-import { BlockcoreIdentity } from './identity';
+import { BlockcoreIdentity2 } from './identity';
 import { VerificationMethodWithPrivateKey } from './interfaces';
 import * as bs58 from 'bs58';
 
@@ -19,7 +19,7 @@ export class BlockcoreIdentityTools {
       network: this.getProfileNetwork(),
     });
 
-    return `${BlockcoreIdentity.PREFIX}${address}`;
+    return `${BlockcoreIdentity2.PREFIX}${address}`;
   }
 
   getIdentifiers(identity: string | any): { id: string; controller: string } {
