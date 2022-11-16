@@ -49,16 +49,6 @@ export class BlockcoreIdentity {
     return keyIdentfier.substring(index);
   }
 
-  /** Generates an operation object that is ready to be signed. */
-  operation(type: string, operation: string, version: number, content = {}) {
-    return {
-      type,
-      operation,
-      version,
-      content,
-    };
-  }
-
   /** Returns a signed JWS from the operation payload. Requires that the content has an verificationMethod. */
   async sign(signer: Signer, operation: object | any | unknown) {
     return await createJWS(operation, signer, { kid: operation.content.verificationMethod[0].id });
