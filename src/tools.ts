@@ -9,6 +9,10 @@ export class BlockcoreIdentityTools {
     return num.toString(16).padStart(64, '0');
   }
 
+  getTimestampInSeconds() {
+    return Math.floor(Date.now() / 1000);
+  }
+
   /** Returns the public key in schnorr format. */
   getSchnorrPublicKeyFromPrivateKey(privateKey: Uint8Array): Uint8Array {
     return secp.schnorr.getPublicKey(privateKey);

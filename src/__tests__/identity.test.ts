@@ -24,6 +24,6 @@ test('My Identity', async () => {
   });
 
   expect(didDocument != null).toBeTruthy();
-  const jws = await identity.sign(signer, { version: 0, didDocument: didDocument });
+  const jws = await identity.sign(signer, { version: 0, iat: tool.getTimestampInSeconds(), didDocument: didDocument });
   console.log(jws);
 });
