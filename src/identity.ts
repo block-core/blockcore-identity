@@ -50,7 +50,7 @@ export class BlockcoreIdentity {
   }
 
   /** Returns a signed JWS from the payload. Requires that didDocument in the payload has an verificationMethod. */
-  async sign(signer: Signer, payload: { version: number; iat: number, didDocument: any }) {
-    return await createJWS(payload, signer, { kid: payload.didDocument.verificationMethod[0].id });
+  async sign(signer: Signer, payload: { version: number; iat: number; didDocument: any }, kid: string) {
+    return await createJWS(payload, signer, { kid });
   }
 }

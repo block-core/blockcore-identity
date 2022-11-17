@@ -32,7 +32,13 @@ test('Generate Examples', async () => {
     ],
   });
 
-  const jws = await identity.sign(signer, { version: 0, iat: tool.getTimestampInSeconds(), didDocument: didDocument });
+  // The default pattern for key identifier is #key{keyIndex}.
+  const kid = didDocument.id + '#key0';
+  const jws = await identity.sign(
+    signer,
+    { version: 0, iat: tool.getTimestampInSeconds(), didDocument: didDocument },
+    kid,
+  );
   console.log(jws);
 
   save('did-document.json', JSON.stringify(didDocument, null, 2));
@@ -43,11 +49,15 @@ test('Generate Examples', async () => {
   save('web-key-pair.json', JSON.stringify(keyPair, null, 2));
 
   for (var i = 1; i < 5; i++) {
-    const replacement = await identity.sign(signer, {
-      version: i,
-      iat: tool.getTimestampInSeconds(),
-      didDocument: didDocument,
-    });
+    const replacement = await identity.sign(
+      signer,
+      {
+        version: i,
+        iat: tool.getTimestampInSeconds(),
+        didDocument: didDocument,
+      },
+      kid,
+    );
 
     save('did-document-operation-replace-' + i + '.txt', JSON.stringify(replacement, null, 2));
     save('did-document-operation-replace-' + i + '.json', JSON.stringify(decodeJWT(replacement), null, 2));
