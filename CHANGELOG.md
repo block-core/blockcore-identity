@@ -1,3 +1,10 @@
+## <small>0.0.5 (2022-11-17)</small>
+
+* Add "iat" to the body of the JWS ([2f9dfbf](https://github.com/block-core/blockcore-identity/commit/2f9dfbf))
+* Update version and changelog ([3bdef08](https://github.com/block-core/blockcore-identity/commit/3bdef08))
+
+
+
 ## <small>0.0.4 (2022-11-17)</small>
 
 * Add example usage in README ([2eedf13](https://github.com/block-core/blockcore-identity/commit/2eedf13))
