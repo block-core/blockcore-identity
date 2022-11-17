@@ -44,6 +44,12 @@ export class BlockcoreIdentityTools {
 		};
 	}
 
+	/** Retrieves the DID ID from the JsonWebKey. */
+	getIdentifierFromJsonWebKey(publicKey: JsonWebKey) {
+		const transformedKey = this.convertJsonWebKeyToPublicKey(publicKey);
+		return this.convertPublicKeyToSchnorrPublicKeyHex(transformedKey);
+	}
+
 	/** Returns the public key in schnorr format, supported both compressed and uncompressed public keys. */
 	getSchnorrPublicKeyFromPrivateKey(privateKey: Uint8Array): Uint8Array {
 		return secp.schnorr.getPublicKey(privateKey);
