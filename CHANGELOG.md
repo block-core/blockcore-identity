@@ -1,3 +1,11 @@
+## <small>0.0.7 (2022-11-17)</small>
+
+* Add a function to easily get the DID ID from JsonWebKey ([0529a07](https://github.com/block-core/blockcore-identity/commit/0529a07))
+* Add support for deriving public key from JsonWebKey ([d8cd445](https://github.com/block-core/blockcore-identity/commit/d8cd445))
+* Update version and changelog ([a905aa0](https://github.com/block-core/blockcore-identity/commit/a905aa0))
+
+
+
 ## <small>0.0.6 (2022-11-17)</small>
 
 * Add fully qualified kid to the header ([4a1652f](https://github.com/block-core/blockcore-identity/commit/4a1652f))
