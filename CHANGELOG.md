@@ -1,3 +1,13 @@
+## <small>0.0.4 (2022-11-17)</small>
+
+* Add example usage in README ([2eedf13](https://github.com/block-core/blockcore-identity/commit/2eedf13))
+* Change sequence to version ([cd6cded](https://github.com/block-core/blockcore-identity/commit/cd6cded))
+* Change the "content" to "didDocument" ([5c2dc17](https://github.com/block-core/blockcore-identity/commit/5c2dc17))
+* Remove "operation" from identity as it's simplified and not needed ([be9c9cf](https://github.com/block-core/blockcore-identity/commit/be9c9cf))
+* Update version and changelog ([9ef1609](https://github.com/block-core/blockcore-identity/commit/9ef1609))
+
+
+
 ## <small>0.0.3 (2022-11-16)</small>
 
 * Update packages and remove old unused packages ([7f7ce40](https://github.com/block-core/blockcore-identity/commit/7f7ce40))
