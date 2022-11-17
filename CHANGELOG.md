@@ -1,3 +1,10 @@
+## <small>0.0.6 (2022-11-17)</small>
+
+* Add fully qualified kid to the header ([4a1652f](https://github.com/block-core/blockcore-identity/commit/4a1652f))
+* Update version and changelog ([f735421](https://github.com/block-core/blockcore-identity/commit/f735421))
+
+
+
 ## <small>0.0.5 (2022-11-17)</small>
 
 * Add "iat" to the body of the JWS ([2f9dfbf](https://github.com/block-core/blockcore-identity/commit/2f9dfbf))
