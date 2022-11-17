@@ -6,7 +6,6 @@ const path = require('path');
 
 function save(filename: string, content: string) {
   const filePath = path.join(__dirname, '..', '..', 'examples/', filename);
-  console.log('Saving: ' + filePath);
   const data = fs.writeFileSync(filePath, content);
 }
 
@@ -18,7 +17,7 @@ test('Generate Examples', async () => {
   ]);
 
   const signer = tool.getSigner(privateKey);
-  const publicKey = tool.getSchnorrPublicKeyFromPrivateKey(privateKey);
+  const publicKey = tool.getPublicKeyFromPrivateKey(privateKey);
   const verificationMethod = tool.getVerificationMethod(publicKey);
   const identity = new BlockcoreIdentity(verificationMethod);
 
@@ -34,18 +33,13 @@ test('Generate Examples', async () => {
 
   // The default pattern for key identifier is #key{keyIndex}.
   const kid = didDocument.id + '#key0';
-  const jws = await identity.sign(
-    signer,
-    { version: 0, iat: tool.getTimestampInSeconds(), didDocument: didDocument },
-    kid,
-  );
-  console.log(jws);
+  const jws = await identity.sign(signer, { version: 0, iat: 1668686145, didDocument: didDocument }, kid);
 
   save('did-document.json', JSON.stringify(didDocument, null, 2));
   save('did-document-operation-jws.txt', JSON.stringify(jws, null, 2));
   save('did-document-operation-jws.json', JSON.stringify(decodeJWT(jws), null, 2));
 
-  const keyPair = tool.getKeyPair(privateKey);
+  const keyPair = tool.convertPrivateKeyToJsonWebKeyPair(privateKey);
   save('web-key-pair.json', JSON.stringify(keyPair, null, 2));
 
   for (var i = 1; i < 5; i++) {
@@ -53,7 +47,7 @@ test('Generate Examples', async () => {
       signer,
       {
         version: i,
-        iat: tool.getTimestampInSeconds(),
+        iat: 1668686145,
         didDocument: didDocument,
       },
       kid,

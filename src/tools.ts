@@ -1,94 +1,146 @@
 import { BlockcoreIdentity } from './identity';
 import { VerificationMethod } from './interfaces';
-import * as secp from '@noble/secp256k1';
 import { ES256KSigner } from 'did-jwt';
 import { base64url } from '@scure/base';
+import * as secp from '@noble/secp256k1';
 
 export class BlockcoreIdentityTools {
-  private numTo32String(num: number | bigint): string {
-    return num.toString(16).padStart(64, '0');
-  }
+	getTimestampInSeconds() {
+		return Math.floor(Date.now() / 1000);
+	}
 
-  getTimestampInSeconds() {
-    return Math.floor(Date.now() / 1000);
-  }
+	getSigner(privateKey: Uint8Array) {
+		return ES256KSigner(privateKey);
+	}
 
-  /** Returns the public key in schnorr format. */
-  getSchnorrPublicKeyFromPrivateKey(privateKey: Uint8Array): Uint8Array {
-    return secp.schnorr.getPublicKey(privateKey);
-  }
+	/** Generates a new random private key. */
+	generatePrivateKey(): Uint8Array {
+		return secp.utils.randomPrivateKey();
+	}
 
-  bytesToHex(publicKey: Uint8Array) {
-    return secp.utils.bytesToHex(publicKey);
-  }
+	bytesToHex(bytes: Uint8Array) {
+		return secp.utils.bytesToHex(bytes);
+	}
 
-  /** Takes a public key (either Schnorr or Edsca) and converts it into a schnorr public key and formats as hex. */
-  getSchnorrPublicKeyHex(publicKey: Uint8Array) {
-    if (publicKey.length === 33) {
-      publicKey = this.convertEdcsaPublicKeyToSchnorr(publicKey);
-    }
+	/** Get a VerificationMethod structure from a public key. */
+	getVerificationMethod(
+		publicKey: Uint8Array,
+		keyIndex: number = 0,
+		method: string = BlockcoreIdentity.PREFIX,
+	): VerificationMethod {
+		// The DID ID is based on schnorr public key hex:
+		const id = this.convertPublicKeyToSchnorrPublicKeyHex(publicKey);
+		const id2 = this.bytesToHex(publicKey.slice(1).subarray(0, 32));
+		const did = `${method}:${id}`;
 
-    return this.bytesToHex(publicKey);
-  }
+		console.log('id1:', id);
+		console.log('id2:', id2);
 
-  convertEdcsaPublicKeyToSchnorr(publicKey: Uint8Array) {
-    if (publicKey.length != 33) {
-      throw Error('The public key must be compressed EDCSA public key of length 33.');
-    }
+		return {
+			id: `#key${keyIndex}`,
+			type: 'JsonWebKey2020',
+			controller: did,
+			publicKeyJwk: this.convertPublicKeyToJsonWebKey(publicKey),
+		};
+	}
 
-    const schnorrPublicKey = publicKey.slice(1);
-    return schnorrPublicKey;
-  }
+	/** Returns the public key in schnorr format, supported both compressed and uncompressed public keys. */
+	getSchnorrPublicKeyFromPrivateKey(privateKey: Uint8Array): Uint8Array {
+		return secp.schnorr.getPublicKey(privateKey);
+	}
 
-  getSigner(privateKey: Uint8Array) {
-    return ES256KSigner(privateKey);
-  }
+	/** Returns the public key in Edsca format. */
+	getPublicKeyFromPrivateKey(privateKey: Uint8Array, compressed: boolean = false): Uint8Array {
+		return secp.getPublicKey(privateKey, compressed);
+	}
 
-  generateKey(): Uint8Array {
-    return secp.utils.randomPrivateKey();
-  }
+	/** Takes a public key (either Schnorr or Edsca) and converts it into a schnorr public key and formats as hex. */
+	convertPublicKeyToSchnorrPublicKeyHex(publicKey: Uint8Array) {
+		// Slice & Dice
+		if (publicKey.length > 32) {
+			publicKey = publicKey.slice(1);
+		}
 
-  /** Get a VerificationMethod structure from a public key. */
-  getVerificationMethod(
-    publicKey: Uint8Array,
-    keyIndex: number = 0,
-    method: string = BlockcoreIdentity.PREFIX,
-  ): VerificationMethod {
-    const publicKeyHex = this.bytesToHex(publicKey);
-    const did = `${method}:${publicKeyHex}`;
+		if (publicKey.length > 32) {
+			publicKey = publicKey.subarray(0, 32);
+		}
 
-    return {
-      id: `#key${keyIndex}`,
-      type: 'JsonWebKey2020',
-      controller: did,
-      publicKeyJwk: this.getJsonWebKey(publicKeyHex),
-    };
-  }
+		return this.bytesToHex(publicKey);
+	}
 
-  /** Returns a pair of JSON Web Key that holds public key and private key. */
-  getKeyPair(privateKey: Uint8Array) {
-    const publicKey = secp.schnorr.getPublicKey(privateKey);
-    const publicKeyHex = secp.utils.bytesToHex(publicKey);
+	/** Returns a pair of JSON Web Key that holds public key and private key. */
+	convertPrivateKeyToJsonWebKeyPair(privateKey: Uint8Array) {
+		const publicKey = secp.getPublicKey(privateKey);
+		const publicKeyHex = secp.utils.bytesToHex(publicKey);
 
-    const d = base64url.encode(privateKey);
-    const publicJwk = this.getJsonWebKey(publicKeyHex);
-    const privateJwk = { ...publicJwk, d };
+		const d = base64url.encode(privateKey);
+		const publicJwk = this.convertPublicKeyHexToJsonWebKey(publicKeyHex);
+		const privateJwk = { ...publicJwk, d };
 
-    return { publicJwk, privateJwk };
-  }
+		return { publicJwk, privateJwk };
+	}
 
-  /** Creates a JsonWebKey from a public key hex. */
-  getJsonWebKey(publicKeyHex: string): JsonWebKey {
-    const pub = secp.Point.fromHex(publicKeyHex);
-    const x = secp.utils.hexToBytes(this.numTo32String(pub.x));
-    const y = secp.utils.hexToBytes(this.numTo32String(pub.y));
+	/** Creates a JsonWebKey from a public key hex. Allows conversion of both compressed and uncompressed public keys. */
+	convertPublicKeyHexToJsonWebKey(publicKeyHex: string): JsonWebKey {
+		if (publicKeyHex.length <= 64) {
+			throw new Error('The public key hex must be uncompressed.');
+		}
 
-    return {
-      kty: 'EC',
-      crv: 'secp256k1',
-      x: base64url.encode(x), // This version of base64url uses padding.
-      y: base64url.encode(y), // Without padding: Buffer.from(bytesOfX).toString('base64url')
-      // Example from did-jwt: bytesToBase64url(hexToBytes(kp.getPublic().getY().toString('hex')))
-    };
-  }
+		const pub = secp.Point.fromHex(publicKeyHex);
+		const x = secp.utils.hexToBytes(this.numTo32String(pub.x));
+		const y = secp.utils.hexToBytes(this.numTo32String(pub.y));
+
+		return {
+			kty: 'EC',
+			crv: 'secp256k1',
+			x: base64url.encode(x), // This version of base64url uses padding.
+			y: base64url.encode(y), // Without padding: Buffer.from(bytesOfX).toString('base64url')
+			// Example from did-jwt: bytesToBase64url(hexToBytes(kp.getPublic().getY().toString('hex')))
+		};
+	}
+
+	/** Creates a JsonWebKey from a public key array. Allows conversion of both compressed and uncompressed public keys. */
+	convertPublicKeyToJsonWebKey(publicKey: Uint8Array): JsonWebKey {
+		return this.convertPublicKeyHexToJsonWebKey(this.bytesToHex(publicKey));
+	}
+
+	/** Transforms a JSON Web Key into a hex string. */
+	convertJsonWebKeyToPublicKeyHex(key: JsonWebKey): string {
+		return secp.utils.bytesToHex(this.convertJsonWebKeyToPublicKey(key));
+	}
+
+	/** Transforms a JSON Web Key into a byte array. */
+	convertJsonWebKeyToPublicKey(key: JsonWebKey) {
+		if (!key.x) {
+			throw new Error('The key has undefined x.');
+		}
+
+		if (!key.y) {
+			throw new Error('The key has undefined y.');
+		}
+
+		const x = base64url.decode(key.x);
+		const y = base64url.decode(key.y);
+
+		const point = new secp.Point(this.bytesToNumber(x), this.bytesToNumber(y));
+		point.assertValidity();
+
+		return point.toRawBytes(false);
+	}
+
+	private bytesToNumber(bytes: Uint8Array): bigint {
+		return this.hexToNumber(this.bytesToHex(bytes));
+	}
+
+	private hexToNumber(hex: string): bigint {
+		if (typeof hex !== 'string') {
+			throw new TypeError('hexToNumber: expected string, got ' + typeof hex);
+		}
+		// Big Endian
+		return BigInt(`0x${hex}`);
+	}
+
+	private numTo32String(num: number | bigint): string {
+		return num.toString(16).padStart(64, '0');
+	}
 }
