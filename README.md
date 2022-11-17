@@ -31,8 +31,8 @@ const didDocument = identity.document({
     },
   ],
 });
-const operation = identity.operation('identity', 'create', 0, didDocument);
-const jws = await identity.sign(signer, operation);
+
+const jws = await identity.sign(signer, { version: 0, didDocument: didDocument });
 ```
 
 ## Building and Testing

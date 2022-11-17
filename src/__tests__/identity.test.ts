@@ -10,7 +10,7 @@ test('My Identity', async () => {
 
   const signer = tool.getSigner(privateKey);
   const publicKey = tool.getSchnorrPublicKeyFromPrivateKey(privateKey);
-  const verificationMethod = tool.getVerificationMethod(publicKey, 1);
+  const verificationMethod = tool.getVerificationMethod(publicKey);
   const identity = new BlockcoreIdentity(verificationMethod);
 
   const didDocument = identity.document({
@@ -24,9 +24,6 @@ test('My Identity', async () => {
   });
 
   expect(didDocument != null).toBeTruthy();
-
-  const operation = identity.operation('identity', 'create', 0, didDocument);
-  const jws = await identity.sign(signer, operation);
-
+  const jws = await identity.sign(signer, { version: 0, didDocument: didDocument });
   console.log(jws);
 });

@@ -19,7 +19,7 @@ test('Generate Examples', async () => {
 
   const signer = tool.getSigner(privateKey);
   const publicKey = tool.getSchnorrPublicKeyFromPrivateKey(privateKey);
-  const verificationMethod = tool.getVerificationMethod(publicKey, 1);
+  const verificationMethod = tool.getVerificationMethod(publicKey);
   const identity = new BlockcoreIdentity(verificationMethod);
 
   const didDocument = identity.document({
@@ -32,13 +32,10 @@ test('Generate Examples', async () => {
     ],
   });
 
-  const operation = identity.operation('identity', 'create', 0, didDocument);
-  const jws = await identity.sign(signer, operation);
-
+  const jws = await identity.sign(signer, { version: 0, didDocument: didDocument });
   console.log(jws);
 
   save('did-document.json', JSON.stringify(didDocument, null, 2));
-  save('did-document-operation.json', JSON.stringify(operation, null, 2));
   save('did-document-operation-jws.txt', JSON.stringify(jws, null, 2));
   save('did-document-operation-jws.json', JSON.stringify(decodeJWT(jws), null, 2));
 
@@ -46,9 +43,7 @@ test('Generate Examples', async () => {
   save('web-key-pair.json', JSON.stringify(keyPair, null, 2));
 
   for (var i = 1; i < 5; i++) {
-    var operationPayload = await identity.operation('identity', 'replace', i, jws);
-
-    const replacement = await identity.sign(signer, operation);
+    const replacement = await identity.sign(signer, { version: i, didDocument: didDocument });
 
     save('did-document-operation-replace-' + i + '.txt', JSON.stringify(replacement, null, 2));
     save('did-document-operation-replace-' + i + '.json', JSON.stringify(decodeJWT(replacement), null, 2));
