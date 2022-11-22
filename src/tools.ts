@@ -3,6 +3,7 @@ import { VerificationMethod } from './interfaces';
 import { ES256KSigner } from 'did-jwt';
 import { base64url } from '@scure/base';
 import * as secp from '@noble/secp256k1';
+import { createVerifiableCredentialJwt, Issuer, JwtCredentialPayload, normalizeCredential } from 'did-jwt-vc';
 
 export class BlockcoreIdentityTools {
 	getTimestampInSeconds() {
@@ -11,6 +12,14 @@ export class BlockcoreIdentityTools {
 
 	getSigner(privateKey: Uint8Array) {
 		return ES256KSigner(privateKey);
+	}
+
+	getIssuer(did: string, privateKey: Uint8Array): Issuer {
+		return {
+			did: did,
+			signer: ES256KSigner(privateKey),
+			alg: 'ES256K',
+		};
 	}
 
 	/** Generates a new random private key. */
@@ -30,11 +39,8 @@ export class BlockcoreIdentityTools {
 	): VerificationMethod {
 		// The DID ID is based on schnorr public key hex:
 		const id = this.convertPublicKeyToSchnorrPublicKeyHex(publicKey);
-		const id2 = this.bytesToHex(publicKey.slice(1).subarray(0, 32));
+		// const id2 = this.bytesToHex(publicKey.slice(1).subarray(0, 32));
 		const did = `${method}:${id}`;
-
-		console.log('id1:', id);
-		console.log('id2:', id2);
 
 		return {
 			id: `#key${keyIndex}`,

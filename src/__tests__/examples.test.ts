@@ -9,6 +9,47 @@ function save(filename: string, content: string) {
 	const data = fs.writeFileSync(filePath, content);
 }
 
+test('DID Server Configuration', async () => {
+	const tool = new BlockcoreIdentityTools();
+	const privateKey = Uint8Array.from([
+		224, 238, 59, 150, 73, 84, 228, 234, 104, 62, 83, 160, 122, 31, 108, 129, 74, 29, 104, 195, 192, 81, 158, 11, 167,
+		100, 217, 121, 110, 12, 178, 14,
+	]);
+
+	const signer = tool.getSigner(privateKey);
+	const publicKey = tool.getPublicKeyFromPrivateKey(privateKey);
+	const verificationMethod = tool.getVerificationMethod(publicKey);
+	const identity = new BlockcoreIdentity(verificationMethod);
+
+	// The Blockcore library relies on fragment/non-fully-qualified keys, so we need to build the kid:
+	const kid = `${verificationMethod.controller}${verificationMethod.id}`;
+
+	const configuration = await identity.configuration('htts://localhost:4251', tool.getIssuer(identity.did, privateKey), kid);
+	save('did-configuration.json', JSON.stringify(configuration, null, 2));
+
+	// const issuer = tool.getIssuer(privateKey);
+
+	// const didDocument = identity.document({
+	// 	service: [
+	// 		{
+	// 			id: '#blockexplorer',
+	// 			type: 'BlockExplorer',
+	// 			serviceEndpoint: 'https://explorer.blockcore.net',
+	// 		},
+	// 	],
+	// });
+
+	// expect(didDocument != null).toBeTruthy();
+
+	// // The default pattern for key identifier is #key{keyIndex}.
+	// const kid = didDocument.id + '#key0';
+	// const jws = await identity.sign(
+	// 	signer,
+	// 	{ version: 0, iat: tool.getTimestampInSeconds(), didDocument: didDocument },
+	// 	kid,
+	// );
+});
+
 test('Generate Examples', async () => {
 	const tool = new BlockcoreIdentityTools();
 	const privateKey = Uint8Array.from([
@@ -54,7 +95,7 @@ test('Generate Examples', async () => {
 	const keyPair = tool.convertPrivateKeyToJsonWebKeyPair(privateKey);
 	save('web-key-pair.json', JSON.stringify(keyPair, null, 2));
 
-	for (var i = 1; i < 5; i++) {
+	for (var i = 0; i < 5; i++) {
 		const replacement = await identity.sign(
 			signer,
 			{
@@ -67,6 +108,18 @@ test('Generate Examples', async () => {
 
 		save('did-document-operation-replace-' + i + '.txt', replacement);
 		save('did-document-operation-replace-' + i + '.json', JSON.stringify(decodeJWT(replacement), null, 2));
+
+		// Used to populate local instance of Blockcore DID Server:
+		// const rawResponse = await fetch('http://localhost:4251/', {
+		// 	method: 'POST',
+		// 	headers: {
+		// 		Accept: 'application/json',
+		// 		'Content-Type': 'application/json',
+		// 	},
+		// 	body: replacement,
+		// });
+		// const content = await rawResponse.json();
+		// console.log(content);
 	}
 
 	let replacement = await identity.sign(
