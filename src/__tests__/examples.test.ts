@@ -10,13 +10,12 @@ function save(filename: string, content: string) {
 }
 
 test('DID Server Configuration', async () => {
-	const tool = new BlockcoreIdentityTools();
 	const privateKey = Uint8Array.from([
-		224, 238, 59, 150, 73, 84, 228, 234, 104, 62, 83, 160, 122, 31, 108, 129, 74, 29, 104, 195, 192, 81, 158, 11, 167,
-		100, 217, 121, 110, 12, 178, 14,
+		30, 221, 12, 181, 212, 248, 224, 121, 50, 112, 204, 223, 113, 250, 29, 148, 78, 81, 196, 108, 239, 110, 22, 99, 2,
+		164, 28, 179, 234, 161, 44, 179,
 	]);
 
-	const signer = tool.getSigner(privateKey);
+	const tool = new BlockcoreIdentityTools();
 	const publicKey = tool.getPublicKeyFromPrivateKey(privateKey);
 	const verificationMethod = tool.getVerificationMethod(publicKey);
 	const identity = new BlockcoreIdentity(verificationMethod);
@@ -24,8 +23,34 @@ test('DID Server Configuration', async () => {
 	// The Blockcore library relies on fragment/non-fully-qualified keys, so we need to build the kid:
 	const kid = `${verificationMethod.controller}${verificationMethod.id}`;
 
-	const configuration = await identity.configuration('htts://localhost:4251', tool.getIssuer(identity.did, privateKey), kid);
+	const configuration = await identity.configuration(
+		'htts://localhost:4250',
+		tool.getIssuer(identity.did, privateKey),
+		kid,
+	);
 	save('did-configuration.json', JSON.stringify(configuration, null, 2));
+});
+
+test('DID Server Configuration 2', async () => {
+	const privateKey = Uint8Array.from([
+		224, 238, 59, 150, 73, 84, 228, 234, 104, 62, 83, 160, 122, 31, 108, 129, 74, 29, 104, 195, 192, 81, 158, 11, 167,
+		100, 217, 121, 110, 12, 178, 14,
+	]);
+
+	const tool = new BlockcoreIdentityTools();
+	const publicKey = tool.getPublicKeyFromPrivateKey(privateKey);
+	const verificationMethod = tool.getVerificationMethod(publicKey);
+	const identity = new BlockcoreIdentity(verificationMethod);
+
+	// The Blockcore library relies on fragment/non-fully-qualified keys, so we need to build the kid:
+	const kid = `${verificationMethod.controller}${verificationMethod.id}`;
+
+	const configuration = await identity.configuration(
+		'htts://localhost:4251',
+		tool.getIssuer(identity.did, privateKey),
+		kid,
+	);
+	save('did-configuration2.json', JSON.stringify(configuration, null, 2));
 
 	// const issuer = tool.getIssuer(privateKey);
 
