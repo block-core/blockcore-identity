@@ -1,3 +1,12 @@
+## <small>0.0.8 (2022-11-24)</small>
+
+* Add another test sample generation for .well-known configuration ([88f1f40](https://github.com/block-core/blockcore-identity/commit/88f1f40))
+* Add the .well-known configuration generation to Blockcore Identity ([6c41249](https://github.com/block-core/blockcore-identity/commit/6c41249))
+* Update examples ([b943a4c](https://github.com/block-core/blockcore-identity/commit/b943a4c))
+* Update version and changelog ([cbe9f51](https://github.com/block-core/blockcore-identity/commit/cbe9f51))
+
+
+
 ## <small>0.0.7 (2022-11-17)</small>
 
 * Add a function to easily get the DID ID from JsonWebKey ([0529a07](https://github.com/block-core/blockcore-identity/commit/0529a07))
