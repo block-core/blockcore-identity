@@ -26,6 +26,17 @@ export class BlockcoreIdentity {
 		return this.verificationMethod.controller;
 	}
 
+	/** Shortened version of the DID. */
+	get short() {
+		return this.shorten(this.did);
+	}
+
+	shorten(did: string) {
+		const id = did.substring(did.lastIndexOf(':') + 1);
+		const method = did.substring(0, did.lastIndexOf(':'));
+		return `${method}:${id.substring(0, 5)}...${id.substring(id.length - 5)}`;
+	}
+
 	/** Generates the DID document for the current identity. */
 	document(options: { service: [] } | any = null) {
 		const data: any = {};
