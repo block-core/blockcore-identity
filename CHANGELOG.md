@@ -1,4 +1,11 @@
-## <small>0.0.8 (2022-11-24)</small>
+## <small>0.0.9 (2022-11-25)</small>
+
+* Add a short version of the DID ([5ed532b](https://github.com/block-core/blockcore-identity/commit/5ed532b))
+* Update version and changelog ([691af57](https://github.com/block-core/blockcore-identity/commit/691af57))
+
+
+
+## <small>0.0.8 (2022-11-22)</small>
 
 * Add another test sample generation for .well-known configuration ([88f1f40](https://github.com/block-core/blockcore-identity/commit/88f1f40))
 * Add the .well-known configuration generation to Blockcore Identity ([6c41249](https://github.com/block-core/blockcore-identity/commit/6c41249))
