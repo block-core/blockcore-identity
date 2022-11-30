@@ -57,6 +57,28 @@ export class BlockcoreIdentity {
 
 	/** Generates a well known configuration for DID resolver host. */
 	public async configurationVerifiableCredential(domain: string, issuer: any, kid: string) {
+		return this.verifiableCredential(
+			{
+				id: this.did,
+				origin: domain,
+			},
+			issuer,
+			kid,
+			null,
+			'DomainLinkageCredential',
+			'https://identity.foundation/.well-known/did-configuration/v1',
+		);
+	}
+
+	/** Generates a well known configuration for DID resolver host. */
+	public async verifiableCredential(
+		claim: any,
+		issuer: any,
+		kid: string,
+		id: string | undefined | null,
+		type: string,
+		context: string | undefined | null = undefined,
+	) {
 		const date = new Date();
 		const expiredate = new Date(new Date().setFullYear(date.getFullYear() + 100));
 		let expiredateNumber = Math.floor(expiredate.getTime() / 1000);
@@ -76,20 +98,20 @@ export class BlockcoreIdentity {
 			nbf: currentDateNumber,
 			sub: this.did,
 			vc: {
-				'@context': [
-					'https://www.w3.org/2018/credentials/v1',
-					'https://identity.foundation/.well-known/did-configuration/v1',
-				],
-				type: ['VerifiableCredential', 'DomainLinkageCredential'],
-				credentialSubject: {
-					id: this.did,
-					origin: domain,
-				},
+				'@context': context
+					? ['https://www.w3.org/2018/credentials/v1', context]
+					: ['https://www.w3.org/2018/credentials/v1'],
+				type: ['VerifiableCredential', type],
+				credentialSubject: claim,
 				//"expirationDate": expiredate.toISOString(),
 				//"issuanceDate": date.toISOString(),
 				//"issuer": this.id,
 			},
 		};
+
+		if (id) {
+			vcPayload.jti = id;
+		}
 
 		const vcJwt = await createVerifiableCredentialJwt(vcPayload, issuer, { header: { kid: kid } });
 

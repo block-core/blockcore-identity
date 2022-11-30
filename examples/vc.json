@@ -1,0 +1,30 @@
+{
+  "header": {
+    "kid": "did:is:0f254e55a2633d468e92aa7dd5a76c0c9101fab8e282c8c20b3fefde0d68f217#key0",
+    "alg": "ES256K",
+    "typ": "JWT"
+  },
+  "payload": {
+    "iat": 1669821664,
+    "exp": 2147483647,
+    "vc": {
+      "@context": [
+        "https://www.w3.org/2018/credentials/v1"
+      ],
+      "type": [
+        "VerifiableCredential",
+        "EmailVerification"
+      ],
+      "credentialSubject": {
+        "id": "did:is:0f254e55a2633d468e92aa7dd5a76c0c9101fab8e282c8c20b3fefde0d68f217",
+        "sameAs": "mail@mail.com"
+      }
+    },
+    "nbf": 1669821664,
+    "sub": "did:is:0f254e55a2633d468e92aa7dd5a76c0c9101fab8e282c8c20b3fefde0d68f217",
+    "jti": "123",
+    "iss": "did:is:0f254e55a2633d468e92aa7dd5a76c0c9101fab8e282c8c20b3fefde0d68f217"
+  },
+  "signature": "_BXoFYsrROeh7N3T4HbTWO8Io7nQrPQFUKNQTQ9BODIpmfYNT4gna4XMqSr5Ex7KZFod9xJodoRHE91Te6OBOA",
+  "data": "eyJraWQiOiJkaWQ6aXM6MGYyNTRlNTVhMjYzM2Q0NjhlOTJhYTdkZDVhNzZjMGM5MTAxZmFiOGUyODJjOGMyMGIzZmVmZGUwZDY4ZjIxNyNrZXkwIiwiYWxnIjoiRVMyNTZLIiwidHlwIjoiSldUIn0.eyJpYXQiOjE2Njk4MjE2NjQsImV4cCI6MjE0NzQ4MzY0NywidmMiOnsiQGNvbnRleHQiOlsiaHR0cHM6Ly93d3cudzMub3JnLzIwMTgvY3JlZGVudGlhbHMvdjEiXSwidHlwZSI6WyJWZXJpZmlhYmxlQ3JlZGVudGlhbCIsIkVtYWlsVmVyaWZpY2F0aW9uIl0sImNyZWRlbnRpYWxTdWJqZWN0Ijp7ImlkIjoiZGlkOmlzOjBmMjU0ZTU1YTI2MzNkNDY4ZTkyYWE3ZGQ1YTc2YzBjOTEwMWZhYjhlMjgyYzhjMjBiM2ZlZmRlMGQ2OGYyMTciLCJzYW1lQXMiOiJtYWlsQG1haWwuY29tIn19LCJuYmYiOjE2Njk4MjE2NjQsInN1YiI6ImRpZDppczowZjI1NGU1NWEyNjMzZDQ2OGU5MmFhN2RkNWE3NmMwYzkxMDFmYWI4ZTI4MmM4YzIwYjNmZWZkZTBkNjhmMjE3IiwianRpIjoiMTIzIiwiaXNzIjoiZGlkOmlzOjBmMjU0ZTU1YTI2MzNkNDY4ZTkyYWE3ZGQ1YTc2YzBjOTEwMWZhYjhlMjgyYzhjMjBiM2ZlZmRlMGQ2OGYyMTcifQ"
+}
