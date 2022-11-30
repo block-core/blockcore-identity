@@ -1,3 +1,10 @@
+## <small>0.0.10 (2022-11-30)</small>
+
+* Add ability to create and sign basic VCs ([5b019d8](https://github.com/block-core/blockcore-identity/commit/5b019d8))
+* Update version and changelog ([8b770d8](https://github.com/block-core/blockcore-identity/commit/8b770d8))
+
+
+
 ## <small>0.0.9 (2022-11-25)</small>
 
 * Add a short version of the DID ([5ed532b](https://github.com/block-core/blockcore-identity/commit/5ed532b))
