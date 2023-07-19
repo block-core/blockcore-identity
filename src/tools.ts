@@ -92,6 +92,18 @@ export class BlockcoreIdentityTools {
 		return { publicJwk, privateJwk };
 	}
 
+	/** Returns a pair of JSON Web Key that holds public key and private key. */
+	convertPrivateKeyToJsonWebKeyPairWithoutPadding(privateKey: Uint8Array) {
+		const publicKey = secp.getPublicKey(privateKey);
+		const publicKeyHex = secp.utils.bytesToHex(publicKey);
+
+		const d = base64url.encode(privateKey);
+		const publicJwk = this.convertPublicKeyHexToJsonWebKeyWithoutPadding(publicKeyHex);
+		const privateJwk = { ...publicJwk, d };
+
+		return { publicJwk, privateJwk };
+	}
+
 	/** Creates a JsonWebKey from a public key hex. Allows conversion of both compressed and uncompressed public keys. */
 	convertPublicKeyHexToJsonWebKey(publicKeyHex: string): JsonWebKey {
 		if (publicKeyHex.length <= 64) {
@@ -108,6 +120,23 @@ export class BlockcoreIdentityTools {
 			x: base64url.encode(x), // This version of base64url uses padding.
 			y: base64url.encode(y), // Without padding: Buffer.from(bytesOfX).toString('base64url')
 			// Example from did-jwt: bytesToBase64url(hexToBytes(kp.getPublic().getY().toString('hex')))
+		};
+	}
+
+	convertPublicKeyHexToJsonWebKeyWithoutPadding(publicKeyHex: string): JsonWebKey {
+		if (publicKeyHex.length <= 64) {
+			throw new Error('The public key hex must be uncompressed.');
+		}
+
+		const pub = secp.Point.fromHex(publicKeyHex);
+		const x = secp.utils.hexToBytes(this.numTo32String(pub.x));
+		const y = secp.utils.hexToBytes(this.numTo32String(pub.y));
+
+		return {
+			kty: 'EC',
+			crv: 'secp256k1',
+			x: Buffer.from(x).toString('base64url'),
+			y: Buffer.from(y).toString('base64url'),
 		};
 	}
 
