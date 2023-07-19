@@ -1,3 +1,11 @@
+## <small>0.0.11 (2023-07-19)</small>
+
+* Add support for unpadded key values ([d79d618](https://github.com/block-core/blockcore-identity/commit/d79d618))
+* Rename filetype on test ([bde71bd](https://github.com/block-core/blockcore-identity/commit/bde71bd))
+* Update version and changelog ([bd14df1](https://github.com/block-core/blockcore-identity/commit/bd14df1))
+
+
+
 ## <small>0.0.10 (2022-11-30)</small>
 
 * Add ability to create and sign basic VCs ([5b019d8](https://github.com/block-core/blockcore-identity/commit/5b019d8))
