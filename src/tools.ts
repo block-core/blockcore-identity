@@ -2,6 +2,7 @@ import { BlockcoreIdentity } from './identity';
 import { VerificationMethod } from './interfaces';
 import { ES256KSigner } from 'did-jwt';
 import { base64url } from '@scure/base';
+import { base64url as base64url2 } from 'multiformats/bases/base64';
 import * as secp from '@noble/secp256k1';
 import { createVerifiableCredentialJwt, Issuer, JwtCredentialPayload, normalizeCredential } from 'did-jwt-vc';
 
@@ -94,12 +95,24 @@ export class BlockcoreIdentityTools {
 
 	/** Returns a pair of JSON Web Key that holds public key and private key. */
 	convertPrivateKeyToJsonWebKeyPairWithoutPadding(privateKey: Uint8Array) {
-		const publicKey = secp.getPublicKey(privateKey);
-		const publicKeyHex = secp.utils.bytesToHex(publicKey);
+		const compressedPublicKeyBytes = secp.getPublicKey(privateKey);
+        const compressedPublicKeyHex = secp.utils.bytesToHex(compressedPublicKeyBytes);
+        const curvePoints = secp.Point.fromHex(compressedPublicKeyHex);
+        const uncompressedPublicKeyBytes = curvePoints.toRawBytes(false); // false = uncompressed
 
-		const d = base64url.encode(privateKey);
-		const publicJwk = this.convertPublicKeyHexToJsonWebKeyWithoutPadding(publicKeyHex);
-		const privateJwk = { ...publicJwk, d };
+        const d = base64url2.baseEncode(privateKey);
+        // skip the first byte because it's used as a header to indicate whether the key is uncompressed
+        const x = base64url2.baseEncode(uncompressedPublicKeyBytes.subarray(1, 33));
+        const y = base64url2.baseEncode(uncompressedPublicKeyBytes.subarray(33, 65));
+
+        const publicJwk = {
+          // alg: 'ES256K',
+          kty: 'EC',
+          crv: 'secp256k1',
+          x,
+          y
+        };
+        const privateJwk = { ...publicJwk, d };
 
 		return { publicJwk, privateJwk };
 	}
@@ -120,23 +133,6 @@ export class BlockcoreIdentityTools {
 			x: base64url.encode(x), // This version of base64url uses padding.
 			y: base64url.encode(y), // Without padding: Buffer.from(bytesOfX).toString('base64url')
 			// Example from did-jwt: bytesToBase64url(hexToBytes(kp.getPublic().getY().toString('hex')))
-		};
-	}
-
-	convertPublicKeyHexToJsonWebKeyWithoutPadding(publicKeyHex: string): JsonWebKey {
-		if (publicKeyHex.length <= 64) {
-			throw new Error('The public key hex must be uncompressed.');
-		}
-
-		const pub = secp.Point.fromHex(publicKeyHex);
-		const x = secp.utils.hexToBytes(this.numTo32String(pub.x));
-		const y = secp.utils.hexToBytes(this.numTo32String(pub.y));
-
-		return {
-			kty: 'EC',
-			crv: 'secp256k1',
-			x: Buffer.from(x).toString('base64url'),
-			y: Buffer.from(y).toString('base64url'),
 		};
 	}
 
